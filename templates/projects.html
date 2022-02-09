@@ -1,0 +1,24 @@
+{% extends "base.html" %}  <!-- Imports the NAV from base.html -->
+{% block title %}Projects Page{% endblock %} <!-- Name in the tab -->
+{% block content %}
+<h1 class="center">Projects Page</h1>
+<a class="topleft" href="/"><button type="button">Back</button></a>
+<form action="#" method="post">
+    <table>
+        <tr>
+            <th><label for="projectID">projectID</label></th>
+            <th><label for="projectName">projectName</label></th>
+            <th><label for="projectDesc">projectDesc</label></th>
+        </tr>
+        <tr>
+            <td><input type="text" name="projectID" placeholder="PK" readonly /></td>
+            <td><input type="text" name="projectName" /></td>
+            <td><input type="text" name="projectDesc" /></td>
+        </tr>
+    </table>
+    <br>
+    <input type="submit" name="action" value="Create">
+    <input type="submit" name="action" value="Update">
+    <input type="submit" name="action" value="Delete">
+</form>
+{% endblock %}

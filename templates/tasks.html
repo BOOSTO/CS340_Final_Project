@@ -1,0 +1,42 @@
+{% extends "base.html" %}  <!-- Imports the NAV from base.html -->
+{% block title %}Tasks Page{% endblock %} <!-- Name in the tab -->
+{% block content %}
+<h1 class="center">Tasks Page</h1>
+<a class="topleft" href="/"><button type="button">Back</button></a>
+<form action="#" method="post">
+    <table>
+        <tr>
+            <th><label for="taskID">taskID</label></th>
+            <th><label for="taskName">taskName</label></th>
+            <th><label for="taskDesc">taskDesc</label></th>
+            <th><label for="taskPriority">taskPriority</label></th>
+            <th><label for="taskDeadline"> taskDeadline</label></th>
+        </tr>
+        <tr>
+            <td><input type="text" name="taskID" placeholder="PK" readonly /></td>
+            <td><input type="text" name="taskName" /></td>
+            <td><input type="text" name="taskDesc" /></td>
+            <td><input type="text" name="taskPriority" /></td>
+            <td><input type="text" name="taskDeadline" /></td>
+        </tr>
+        <tr>
+            <th><label for="taskDifficulty">taskDifficulty</label></th>
+            <th><label for="taskDone">taskDone</label></th>
+            <th><label for="taskProjectID">taskProjectID</label></th>
+            <th><label for="taskTeamID">taskTeamID</label></th>
+            <th><label for="taskMemberID">taskMemberID</label></th>
+        </tr> 
+        <tr>
+            <td><input type="text" name="taskDifficulty" /></td>
+            <td><input type="text" name="taskDone" /></td>
+            <td><input type="text" name="taskProjectID" placeholder="FK from Project" readonly /></td>
+            <td><input type="text" name="taskTeamID" placeholder="FK from Teams" readonly /></td>
+            <td><input type="text" name="taskMemberID" placeholder="FK from Members" readonly /></td>
+        </tr>
+    </table>
+    <br>
+    <input type="submit" name="action" value="Create">
+    <input type="submit" name="action" value="Update">
+    <input type="submit" name="action" value="Delete">
+</form>
+{% endblock %}
