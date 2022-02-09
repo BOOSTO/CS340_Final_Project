@@ -4,39 +4,91 @@
 <h1 class="center">Tasks Page</h1>
 <a class="topleft" href="/"><button type="button">Back</button></a>
 <form action="#" method="post">
-    <table>
+    <table id="table-data">
+        <colgroup>
+            <col id="col-grp-id">
+            <col id="col-grp-name">
+            <col id="col-grp-desc">
+            <col id="col-grp-project">
+            <col id="col-grp-act">
+         </colgroup>
         <tr>
-            <th><label for="taskID">taskID</label></th>
-            <th><label for="taskName">taskName</label></th>
-            <th><label for="taskDesc">taskDesc</label></th>
-            <th><label for="taskPriority">taskPriority</label></th>
-            <th><label for="taskDeadline"> taskDeadline</label></th>
+            <th><label>taskID</label></th>
+            <th><label>taskName</label></th>
+            <th><label>taskDesc</label></th>
+            <th><label>taskPriority</label></th>
+            <th><label>taskDeadline</label></th>
+            <th><label>taskDifficulty</label></th>
+            <th><label>taskDone</label></th>
+            <th><label>taskProjectID</label></th>
+            <th><label>taskTeamID</label></th>
+            <th><label>taskMemberID</label></th>
+            <th><label>Actions</label></th>
         </tr>
         <tr>
             <td><input type="text" name="taskID" placeholder="PK" readonly /></td>
             <td><input type="text" name="taskName" /></td>
-            <td><input type="text" name="taskDesc" /></td>
-            <td><input type="text" name="taskPriority" /></td>
-            <td><input type="text" name="taskDeadline" /></td>
+            <td><input  type="text" name="taskDesc" class="input-desc"/></td>
+            <td><input  type="text" name="taskPriority"/></td>
+            <td><input  type="text" name="taskDeadline"/></td>
+            <td><input  type="text" name="taskDifficulty"/></td>
+            <td><input  type="text" name="taskDone"/></td>
+            <td><input  type="text" name="taskProjectID"/></td>
+            <td><input  type="text" name="taskTeamID"/></td>
+            <td><input  type="text" name="taskMemberID"/></td>
+            <td>
+                <button type="submit" name="action" value="Create"><i class="fa-solid fa-plus"></i></button>
+            </td>
+        </tr>
+        <tr id="line-break"><td><br></td>></tr>
+        <tr>
+            <td><input type="text" name="taskID" value="0" readonly /></td>
+            <td><input type="text" name="taskName" value="Survive bad guy Among Us"/></td>
+            <td><input type="text" name="taskDesc" class="input-desc" value="Avoid bad guy Among Us at all times or they will get you"/></td>
+            <td><input type="text" name="taskPriority" value="100"/></td>
+            <td><input type="text" name="taskDeadline" value="02-10-2020"/></td>
+            <td><input type="text" name="taskDifficulty" value="2"/></td>
+            <td><input type="text" name="taskDone" value="No"/></td>
+            <td><input type="text" name="taskProjectID" value="1"/></td>
+            <td><input type="text" name="taskTeamID" value="2"/></td>
+            <td><input type="text" name="taskMemberID" value="1"/></td>
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
         </tr>
         <tr>
-            <th><label for="taskDifficulty">taskDifficulty</label></th>
-            <th><label for="taskDone">taskDone</label></th>
-            <th><label for="taskProjectID">taskProjectID</label></th>
-            <th><label for="taskTeamID">taskTeamID</label></th>
-            <th><label for="taskMemberID">taskMemberID</label></th>
-        </tr> 
+            <td><input type="text" name="taskID" value="1" readonly /></td>
+            <td><input type="text" name="taskName" value="Save Sgt. Johnson from flood"/></td>
+            <td><input type="text" name="taskDesc" class="input-desc" value="Sgt. Johnson has been ambushed and needs our help"/></td>
+            <td><input type="text" name="taskPriority" value="10"/></td>
+            <td><input type="text" name="taskDeadline" value="01-10-2008"/></td>
+            <td><input type="text" name="taskDifficulty" value="4"/></td>
+            <td><input type="text" name="taskDone" value="No"/></td>
+            <td><input type="text" name="taskProjectID" value="2"/></td>
+            <td><input type="text" name="taskTeamID" value="5"/></td>
+            <td><input type="text" name="taskMemberID" value="2"/></td>
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </tr>
         <tr>
-            <td><input type="text" name="taskDifficulty" /></td>
-            <td><input type="text" name="taskDone" /></td>
-            <td><input type="text" name="taskProjectID" placeholder="FK from Project" readonly /></td>
-            <td><input type="text" name="taskTeamID" placeholder="FK from Teams" readonly /></td>
-            <td><input type="text" name="taskMemberID" placeholder="FK from Members" readonly /></td>
+            <td><input type="text" name="taskID" value="2" readonly /></td>
+            <td><input type="text" name="taskName" value="Study Chicken"/></td>
+            <td><input type="text" name="taskDesc" class="input-desc" value="Try to understand why chicken crossed the road"/></td>
+            <td><input type="text" name="taskPriority" value="2"/></td>
+            <td><input type="text" name="taskDeadline" value="05-25-2015"/></td>
+            <td><input type="text" name="taskDifficulty" value="4"/></td>
+            <td><input type="text" name="taskDone" value="Yes"/></td>
+            <td><input type="text" name="taskProjectID" value="3"/></td>
+            <td><input type="text" name="taskTeamID" value="1"/></td>
+            <td><input type="text" name="taskMemberID" value="4"/></td>
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
         </tr>
     </table>
-    <br>
-    <input type="submit" name="action" value="Create">
-    <input type="submit" name="action" value="Update">
-    <input type="submit" name="action" value="Delete">
 </form>
 {% endblock %}

@@ -4,25 +4,61 @@
 <h1 class="center">Members Page</h1>
 <a class="topleft" href="/"><button type="button">Back</button></a>
 <form action="#" method="post">
-    <table>
+    <table id="table-data">
+        <colgroup>
+            <col id="col-grp-id">
+            <col id="col-grp-fname">
+            <col id="col-grp-lname">
+            <col id="col-grp-email">
+            <col id="col-grp-act">
+         </colgroup>
         <tr>
-            <th><label for="memberID">memberID</label></th>
-            <th><label for="memberFName">memberFName</label></th>
-            <th><label for="memberLName">memberLName</label></th>
-            <th><label for="memberEmail">memberEmail</label></th>
-            <th><label for="memberProjectID">memberProjectID</label></th>
+            <th><label>memberID</label></th>
+            <th><label>memberFName</label></th>
+            <th><label>memberLName</label></th>
+            <th><label>memberEmail</label></th>
+            <th><label>Actions</label></th>
         </tr>
         <tr>
             <td><input type="text" name="memberID" placeholder="PK" readonly /></td>
             <td><input type="text" name="memberFName" /></td>
-            <td><input type="text" name="memberLName" /></td>
-            <td><input type="text" name="memberEmail" /></td>
-            <td><input type="text" name="memberProjectID" placeholder="FK from Project" readonly /></td>
+            <td><input type="text" name="memberLName" class="input-desc"/></td>
+            <td><input type="text" name="memberEmail" class="input-desc"/></td>
+            <td>
+                <button type="submit" name="action" value="Create"><i class="fa-solid fa-plus"></i></button>
+            </td>
+        </tr>
+        <tr id="line-break"><td><br></td>></tr>
+        <tr>
+            <td><input type="text" name="memberID" value="0" readonly /></td>
+            <td><input type="text" name="memberFName" value="Purple"/></td>
+            <td><input type="text" name="memberLName" class="input-desc" value="Guy"/></td>
+            <td><input type="text" name="memberEmail" class="input-desc" value="PurpleAmongUs@mail.com"/></td>
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </tr>
+        <tr>
+            <td><input type="text" name="memberID" value="1" readonly /></td>
+            <td><input type="text" name="memberFName" value="Cortona"/></td>
+            <td><input type="text" name="memberLName" class="input-desc" value="AI"/></td>
+            <td><input type="text" name="memberEmail" class="input-desc" value="Cortona@mail.com"/></td>
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </tr>
+        <tr>
+            <td><input type="text" name="memberID" value="2" readonly /></td>
+            <td><input type="text" name="memberFName" value="Morty"/></td>
+            <td><input type="text" name="memberLName" class="input-desc" value="Smith"/></td>
+            <td><input type="text" name="memberEmail" class="input-desc" value="Morty@mail.com"/></td>
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
         </tr>
     </table>
-    <br>
-    <input type="submit" name="action" value="Create">
-    <input type="submit" name="action" value="Update">
-    <input type="submit" name="action" value="Delete">
 </form>
 {% endblock %}
