@@ -3,13 +3,13 @@
 {% block content %}
 <h1 class="center">Projects Page</h1>
 <h3 class="center">Add/Modify/Delete projects</h3>
+<div id="search-box">
+    <form method="GET" action="/members">
+        <input type="text" id="search-input" placeholder="Find a member...">
+        <input type="submit" id="search-go" value="Go">
+    </form>
+</div>
 <table id="table-data">
-    <colgroup>
-        <col id="col-grp-id">
-        <col id="col-grp-name">
-        <col id="col-grp-desc">
-        <col id="col-grp-act">
-    </colgroup>
     <tr>
         <th><label>projectID</label></th>
         <th><label>projectName</label></th>

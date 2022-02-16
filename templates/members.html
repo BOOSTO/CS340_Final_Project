@@ -3,14 +3,13 @@
 {% block content %}
 <h1 class="center">Members Page</h1>
 <h3 class="center">Add/Modify/Remove members</h3>
+<div id="search-box">
+    <form method="GET" action="/members">
+        <input type="text" id="search-input" placeholder="Find a member...">
+        <input type="submit" id="search-go" value="Go">
+    </form>
+</div>
 <table id="table-data">
-    <colgroup>
-        <col id="col-grp-id">
-        <col id="col-grp-fname">
-        <col id="col-grp-lname">
-        <col id="col-grp-email">
-        <col id="col-grp-act">
-        </colgroup>
     <tr>
         <th><label>memberID</label></th>
         <th><label>memberFName</label></th>

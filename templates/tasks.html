@@ -3,25 +3,24 @@
 {% block content %}
 <h1 class="center">Tasks Page</h1>
 <h3 class="center">Add/Modify/Delete tasks</h3>
+<div id="search-box">
+    <form method="GET" action="/tasks">
+        <input type="text" id="search-input" placeholder="Find a task...">
+        <input type="submit" id="search-go" value="Go">
+    </form>
+</div>
 <table id="table-data">
-    <colgroup>
-        <col id="col-grp-id">
-        <col id="col-grp-name">
-        <col id="col-grp-desc">
-        <col id="col-grp-project">
-        <col id="col-grp-act">
-        </colgroup>
     <tr>
-        <th><label>taskID</label></th>
-        <th><label>taskName</label></th>
-        <th><label>taskDesc</label></th>
-        <th><label>taskPriority</label></th>
-        <th><label>taskDeadline</label></th>
-        <th><label>taskDifficulty</label></th>
-        <th><label>taskDone</label></th>
-        <th><label>taskProjectID</label></th>
-        <th><label>taskTeamID</label></th>
-        <th><label>taskMemberID</label></th>
+        <th><label>ID</label></th>
+        <th><label>Name</label></th>
+        <th><label>Desc</label></th>
+        <th><label>Priority</label></th>
+        <th><label>Deadline</label></th>
+        <th><label>Difficulty</label></th>
+        <th><label>Done</label></th>
+        <th><label>ProjectID</label></th>
+        <th><label>TeamID</label></th>
+        <th><label>MemberID</label></th>
         <th><label>Actions</label></th>
     </tr>
     <tr>
@@ -29,9 +28,9 @@
         <td><input type="text" name="taskName" /></td>
         <td><input  type="text" name="taskDesc" class="input-desc"/></td>
         <td><input  type="text" name="taskPriority"/></td>
-        <td><input  type="text" name="taskDeadline"/></td>
+        <td><input  type="date" name="taskDeadline"/></td>
         <td><input  type="text" name="taskDifficulty"/></td>
-        <td><input  type="text" name="taskDone"/></td>
+        <td><input  type="checkbox" name="taskDone"/></td>
         <td><input  type="text" name="taskProjectID" placeholder="FK" readonly /></td>
         <td><input  type="text" name="taskTeamID"placeholder="FK" readonly /></td>
         <td><input  type="text" name="taskMemberID"placeholder="FK" readonly /></td>
