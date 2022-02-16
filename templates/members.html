@@ -31,18 +31,18 @@
     </tr>
     <tr id="line-break"><td><br></td></tr>
     {% for item in data %}
-        <tr>
-            <form method="POST" action="#">
-                <td><input type="text" name="memberID" value="{{item['memberID']}}" readonly /></td>
-                <td><input type="text" name="memberFname" value="{{item['memberFname']}}" /></td>
-                <td><input type="text" name="memberLname" value="{{item['memberLname']}}" /></td>
-                <td><input type="text" name="memberEmail" value="{{item['memberEmail']}}" /></td>
-                <td class="col-act">
-                    <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
-                </td>
-            </form>
-        </tr>
+    <tr>
+        <form method="POST" action="#">
+            <td><input type="text" name="memberID" value="{{item['memberID']}}" readonly /></td>
+            <td><input type="text" name="memberFname" value="{{item['memberFname']}}" /></td>
+            <td><input type="text" name="memberLname" value="{{item['memberLname']}}" /></td>
+            <td><input type="text" name="memberEmail" value="{{item['memberEmail']}}" /></td>
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </form>
+    </tr>
     {% endfor %}
 </table>
 {% endblock %}

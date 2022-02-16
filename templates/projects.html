@@ -28,17 +28,17 @@
     </tr>
     <tr id="line-break"><td><br></td></tr>
     {% for item in data %}
-        <tr>
-            <form action="#" method="post">
-                <td><input type="text" name="projectID" value="{{item['projectID']}}" readonly /></td>
-                <td><input type="text" name="projectName" value="{{item['projectName']}}" /></td>
-                <td><input type="text" name="projectDesc" class="input-desc" value="{{item['projectDesc']}}" /></td>
-                <td class="col-act">
-                    <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
-                </td>
-            </form>
-        </tr>
+    <tr>
+        <form action="#" method="post">
+            <td><input type="text" name="projectID" value="{{item['projectID']}}" readonly /></td>
+            <td><input type="text" name="projectName" value="{{item['projectName']}}" /></td>
+            <td><input type="text" name="projectDesc" class="input-desc" value="{{item['projectDesc']}}" /></td>
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </form>
+    </tr>
     {% endfor %}
 </table>
 {% endblock %}

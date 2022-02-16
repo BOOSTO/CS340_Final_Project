@@ -3,21 +3,41 @@
 {% block content %}
 <h1 class="center">Members_Teams Page</h1>
 <h3 class="center">Assign members to teams</h3>
-<a class="topleft" href="/"><button type="button">Back</button></a>
-<form action="#" method="post">
-    <table>
-        <tr>
-            <th><label for="mapID">mapID</label></th>
-            <th><label for="memberID">memberID</label></th>
-            <th><label for="teamID">teamID</label></th>
-        </tr>
-        <tr>
+<table id="table-data">
+    <colgroup>
+        <col id="col-grp-id">
+        <col id="col-grp-name">
+        <col id="col-grp-desc">
+        <col id="col-grp-act">
+    </colgroup>
+    <tr>
+        <th><label for="mapID">mapID</label></th>
+        <th><label for="memberID">memberID</label></th>
+        <th><label for="teamID">teamID</label></th>
+    </tr>
+    <tr>
+        <form action="#" method="post">
             <td><input type="text" name="mapID" placeholder="PK" readonly /></td>
             <td><input type="text" name="memberID" placeholder="FK from Members" readonly /></td>
             <td><input type="text" name="teamID" placeholder="FK from Teams" readonly /></td>
+            <td>
+                <button type="submit" name="action" value="Create"><i class="fa-solid fa-plus"></i></button>
+            </td>
+        </form>
+    </tr>
+    <tr id="line-break"><td><br></td>></tr>
+    {% for item in data %}
+        <tr>
+            <form action="#" method="post">
+                <td><input type="text" name="mapID" value="{{item['mapID']}}" readonly /></td>
+                <td><input type="text" name="memberID" value="{{item['memberID']}}" readonly /></td>
+                <td><input type="text" name="teamID" value="{{item['teamID']}}" readonly /></td>
+                <td class="col-act">
+                    <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </form>
         </tr>
-    </table>
-    <br>
-    <input type="submit" value="Submit">
-</form>
+    {% endfor %}
+</table>
 {% endblock %}

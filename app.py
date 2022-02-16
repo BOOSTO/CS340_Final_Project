@@ -97,6 +97,38 @@ fake_tasks_data = [
         "taskMemberID": "4"
     }
 ]
+fake_members_teams_data = [
+    {
+        "mapID": "0",
+        "memberID": "10",
+        "teamID": "2"
+    },
+    {
+        "mapID": "1",
+        "memberID": "8",
+        "teamID": "2"
+    },
+    {
+        "mapID": "2",
+        "memberID": "6",
+        "teamID": "2"
+    },
+    {
+        "mapID": "3",
+        "memberID": "15",
+        "teamID": "4"
+    },
+    {
+        "mapID": "4",
+        "memberID": "6",
+        "teamID": "4"
+    },
+    {
+        "mapID": "5",
+        "memberID": "7",
+        "teamID": "4"
+    }
+]
 
 
 def redirect_from_submit(data):
@@ -165,7 +197,7 @@ def tasks():
 @app.route("/members_teams", methods=["POST", "GET"])
 def members_teams():
     """Members_Teams Page"""
-    return render_template("members_teams.html")
+    return render_template("members_teams.html", data=fake_members_teams_data)
 
 
 @app.route("/create/<data>", methods=["POST", "GET"])
