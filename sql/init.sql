@@ -1,7 +1,7 @@
-CREATE DATABASE:
+-- Create database -
 CREATE DATABASE 340_project;
 
-CREATE TABLES:
+-- Create tables -
 CREATE TABLE Projects (
     projectID INT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
     projectName VARCHAR(255) NOT NULL, 
@@ -43,20 +43,19 @@ CREATE TABLE Tasks (
     taskDone BOOLEAN NOT NULL,
     taskProjectID int NOT NULL,
     taskTeamID int,
-    taskMemberID int ,
+    taskMemberID int,
     CONSTRAINT taskProjectIDFK
     FOREIGN KEY (taskProjectID) REFERENCES projects(projectID)
     ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT taskTeamIDFK
     FOREIGN KEY (taskTeamID) REFERENCES teams(teamID)
-    ON UPDATE CASCADE ON DELETE CASCADE,
+    ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT taskMemberIDFK
     FOREIGN KEY (taskMemberID) REFERENCES members(memberID)
-    ON UPDATE CASCADE ON DELETE CASCADE
+    ON UPDATE CASCADE ON DELETE SET NULL
 );
 
-
-INSERT SAMPLE DATA:
+-- Insert values into tables -
 INSERT INTO projects (projectName, projectDesc)
 VALUES 
     ('Among Us', 'The revolutionary game that brought people together during the pandemic'),
@@ -81,36 +80,12 @@ VALUES
     (3, 1),
     (2, 3);
 
-
-
 INSERT INTO tasks ( taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID)
 VALUES 
     ('Survive bad guy Among Us', 'Avoid bad guy Among Us at all times or they will get you', 100, '2013-04-02', 2, False, 1, 2, 1),
     ('Save Sgt. Jognson from flood', 'Sgt. Johnson has been ambushed and needs our help', 10, '2022-12-08', 4, False, 2, 3, 2),
     ('Study Chicken', 'Try to understand why chicken crossed the road', 2, '2013-01-08', 4, True, 3, 1, 3);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-SELECT
 -- get all projectID, projectName, and projectDesc to populate Project’s Page --
 SELECT * FROM projects;
 
@@ -153,8 +128,6 @@ SELECT * FROM projects WHERE projectName = {{projectName}};
 -- get single member for the search form –
 SELECT * FROM members WHERE memberEmail = {{memberEmail}};
 
-
-CREATE
 -- add new project –
 INSERT INTO projects (projectName, projectDesc) VALUES 
 ({{projectName}}, {{projectDesc}});
@@ -162,8 +135,6 @@ INSERT INTO projects (projectName, projectDesc) VALUES
 -- add new member –
 INSERT INTO members (memberFName, memberLName, memberEmail) VALUES 
 ({{memberFName}}, {{memberLName}}, {{memberEmail}});
-
-
 
 -- add new team –
 INSERT INTO teams (teamName, teamDesc, teamProjectID)
@@ -180,7 +151,6 @@ INSERT INTO tasks (taskName, taskDesc, taskPriority, taskDeadline, taskDifficult
 VALUES 
 ({{taskName}}, {{taskDesc}}, {{taskPriority}}, {{taskDeadline}}, {{taskDifficulty}}, {{taskDone}}, {{taskProjectID}}, {{taskTeamID}}, {{teaskMemberID}})
 
-UPDATE
 -- update project data based on user submission of form --
 UPDATE projects SET projectName={{projectName}}, projectDesc={{projectDesc}} WHERE projectID={{projectID}};
 
@@ -195,7 +165,6 @@ UPDATE membersteams SET memberID={{memberID}}, teamID={{teamID}} WHERE mapID={{m
 -- update task based on user submission of form –
 UPDATE tasks SET taskName={{taskName}}, taskDesc={{taskDesc}}, taskPriority={{taskPriority}}, taskDeadline={{taskDeadline}}, taskDifficulty={{taskDifficulty}}, taskDone={{taskDone}}, taskProjectID={{taskProjectID}}, taskTeamID={{taskTeamID}}, taskMemberID={{taskMemberID}} WHERE taskID={{taskID}};
 
-DELETE
 -- delete project data based on user submission of form –
 DELETE FROM projects WHERE projectID={{projectID}};
 
