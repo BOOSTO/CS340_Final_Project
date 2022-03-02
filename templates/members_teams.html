@@ -3,17 +3,11 @@
 {% block content %}
 <h1 class="center">Members_Teams Page</h1>
 <h3 class="center">Assign members to teams</h3>
-<table id="table-data">
-    <colgroup>
-        <col id="col-grp-id">
-        <col id="col-grp-name">
-        <col id="col-grp-desc">
-        <col id="col-grp-act">
-    </colgroup>
+<table id="table-data" style="width:30%;">
     <tr>
-        <th><label for="mapID">mapID</label></th>
-        <th><label for="memberID">memberID</label></th>
-        <th><label for="teamID">teamID</label></th>
+        <th><label>mapID</label></th>
+        <th><label>memberID</label></th>
+        <th><label>teamID</label></th>
     </tr>
     <tr>
         <form action="#" method="post">
@@ -28,7 +22,7 @@
                     <option value="{{member['memberID']}}">{{member['fullName']}}</option>
                     {% endfor %}
                 </select>
-            </td>
+            </td >
             <td>
                 <select name="teamID" size="1" >
                     <option value="NULL" disabled selected>Select Team</option>
@@ -61,7 +55,7 @@
                     </select>
                  </td>
                 <td>
-                    <select name="taskTeamID" size="1" >
+                    <select name="teamID" size="1" >
                     <option value="{{item['teamID']}}">{{item['teamName']}}</option>
                     {% for team in teams %}
                         {% if team['teamName'] != item['teamName'] %}

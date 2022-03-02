@@ -9,11 +9,11 @@
         <input type="submit" name="search" value="Go">
     </form>
 </div>
-<table id="table-data">
+<table id="table-data" style="width:40%;position:relative;left:35px;">
     <tr>
-        <th><label>memberID</label></th>
-        <th><label>memberFName</label></th>
-        <th><label>memberLName</label></th>
+        <th style="width:5%;"><label>memberID</label></th>
+        <th style="width:15%;"><label>memberFName</label></th>
+        <th style="width:15%;"><label>memberLName</label></th>
         <th><label>memberEmail</label></th>
         <th><label>Actions</label></th>
     </tr>
@@ -41,8 +41,8 @@
                 <input type="hidden" name="page" value="memberPage">
                 <input type="text" name="memberID" value="{{item['memberID']}}" readonly />
             </td>
-            <td><input type="text" name="memberFname" value="{{item['memberFName']}}" /></td>
-            <td><input type="text" name="memberLname" value="{{item['memberLName']}}" /></td>
+            <td><input type="text" name="memberFName" value="{{item['memberFName']}}" /></td>
+            <td><input type="text" name="memberLName" value="{{item['memberLName']}}" /></td>
             <td><input type="text" name="memberEmail" value="{{item['memberEmail']}}" /></td>
             <td class="col-act">
                 <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
