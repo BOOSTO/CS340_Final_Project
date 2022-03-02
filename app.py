@@ -218,7 +218,7 @@ def teams():
         data = request.form
         print(data)
         CRUD_operations(data)
-    result = sql_SELECT("SELECT teams.teamID, teams.teamName, teams.teamDesc, Projects.projectName, Projects.projectID FROM Teams LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID")
+    result = sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID FROM Teams LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID")
     teams_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
     return render_template("teams.html", data=result, projects=teams_projects)
 
