@@ -4,58 +4,122 @@
 <h1 class="center">Tasks Page</h1>
 <h3 class="center">Add/Modify/Delete tasks</h3>
 <div id="search-box">
-    <form method="GET" action="/tasks">
-        <input type="text" id="search-input" placeholder="Find a task...">
-        <input type="submit" id="search-go" value="Go">
+    <form method="POST" action="/tasks">
+        <input type="text" name="search-input" placeholder="Search with projectName">
+        <input type="submit" name="search" value="Go">
     </form>
 </div>
 <table id="table-data">
     <tr>
-        <th><label>ID</label></th>
-        <th><label>Name</label></th>
-        <th><label>Desc</label></th>
-        <th><label>Priority</label></th>
-        <th><label>Deadline</label></th>
-        <th><label>Difficulty</label></th>
-        <th><label>Done</label></th>
-        <th><label>ProjectID</label></th>
-        <th><label>TeamID</label></th>
-        <th><label>MemberID</label></th>
+        <th><label>taskID</label></th>
+        <th><label>taskName</label></th>
+        <th><label>taskDesc</label></th>
+        <th><label>taskPriority</label></th>
+        <th><label>taskDeadline</label></th>
+        <th><label>taskDifficulty</label></th>
+        <th><label>taskDone</label></th>
+        <th><label>projectID</label></th>
+        <th><label>teamID</label></th>
+        <th><label>memberID</label></th>
         <th><label>Actions</label></th>
     </tr>
     <tr>
-        <td><input type="text" name="taskID" placeholder="PK" readonly /></td>
-        <td><input type="text" name="taskName" /></td>
-        <td><input  type="text" name="taskDesc" class="input-desc"/></td>
-        <td><input  type="text" name="taskPriority"/></td>
-        <td><input  type="date" name="taskDeadline"/></td>
-        <td><input  type="text" name="taskDifficulty"/></td>
-        <td><input  type="checkbox" name="taskDone"/></td>
-        <td><input  type="text" name="taskProjectID" placeholder="FK" readonly /></td>
-        <td><input  type="text" name="taskTeamID"placeholder="FK" readonly /></td>
-        <td><input  type="text" name="taskMemberID"placeholder="FK" readonly /></td>
-        <td>
-            <button type="submit" name="action" value="Create"><i class="fa-solid fa-plus"></i></button>
-        </td>
+        <form method="POST" action="#">
+            <td>
+                <input type="hidden" name="search" value="No">
+                <input type="hidden" name="page" value="taskPage">
+                <input type="text" name="taskID" placeholder="PK" readonly />
+            </td>
+            <td><input type="text" name="taskName" /></td>
+            <td><input  type="text" name="taskDesc" class="input-desc"/></td>
+            <td><input  type="text" name="taskPriority"/></td>
+            <td><input  type="date" name="taskDeadline"/></td>
+            <td><input  type="text" name="taskDifficulty"/></td>
+            <td><input  type="checkbox" name="taskDone" value="1"/></td>
+            <td>
+                <select name="taskProjectID" id="taskProjectID" size="1" >
+                    <option value="NULL" disabled selected>Select Project</option>
+                    {% for project in projects %}
+                    <option value="{{project['projectID']}}">{{project['projectName']}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="taskTeamID" id="taskTeamID" size="1" >
+                    <option value="NULL" disabled selected>Select Team</option>
+                    {% for team in teams %}
+                    <option value="{{team['teamID']}}">{{team['teamName']}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="taskMemberID" id="taskMemberID" size="1" >
+                    <option value="NULL" disabled selected>Select Member</option>
+                    {% for member in members %}
+                    <option value="{{member['memberID']}}">{{member['fullName']}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <button type="submit" name="action" value="Create"><i class="fa-solid fa-plus"></i></button>
+            </td>
+        </form>
     </tr>
     <tr id="line-break"><td><br></td>></tr>
     {% for item in data %}
     <tr>
         <form method="POST" action="#">
-            <td><input type="text" name="taskID" value="{{item['taskID']}}" readonly /></td>
-                <td><input type="text" name="taskName" value="{{item['taskName']}}" /></td>
-                <td><input type="text" name="taskDesc" value="{{item['taskDesc']}}" /></td>
-                <td><input type="text" name="taskPriority" value="{{item['taskPriority']}}" /></td>
-                <td><input type="date" name="taskDeadline" value="{{item['taskDeadline']}}" /></td>
-                <td><input type="text" name="taskDifficulty" value="{{item['taskDifficulty']}}" /></td>
-                <td><input type="text" name="taskDone" value="{{item['taskDone']}}" /></td>
-                <td><input type="text" name="taskProjectID" value="{{item['taskProjectID']}}" /></td>
-                <td><input type="text" name="taskTeamID" value="{{item['taskTeamID']}}" /></td>
-                <td><input type="text" name="taskMemberID" value="{{item['taskMemberID']}}" /></td>
-                <td class="col-act">
-                    <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
-                </td>
+            <td>
+                <input type="hidden" name="search" value="No">
+                <input type="hidden" name="page" value="taskPage">
+                <input type="text" name="taskID" value="{{item['taskID']}}" readonly />
+            </td>
+            <td><input type="text" name="taskName" value="{{item['taskName']}}" /></td>
+            <td><input type="text" name="taskDesc" value="{{item['taskDesc']}}" /></td>
+            <td><input type="text" name="taskPriority" value="{{item['taskPriority']}}" /></td>
+            <td><input type="date" name="taskDeadline" value="{{item['taskDeadline']}}" /></td>
+            <td><input type="text" name="taskDifficulty" value="{{item['taskDifficulty']}}" /></td>
+
+            {% if item['taskDone'] == 0 %}
+                <td><input  type="checkbox" name="taskDone" value="1"/></td>
+            {% else %}
+                <td><input  type="checkbox" name="taskDone" value="1" checked/></td>
+            {% endif %}
+
+            <td><select name="taskProjectID" size="1" >
+                <option value="{{item['projectID']}}">{{item['projectName']}}</option>
+                {% for project in projects %}
+                    {% if project['projectName'] != item['projectName'] %}
+                    <option value="{{project['projectID']}}">{{project['projectName']}}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </td>
+
+            <td><select name="taskTeamID" size="1" >
+                <option value="{{item['teamID']}}">{{item['teamName']}}</option>
+                {% for team in teams %}
+                    {% if team['teamName'] != item['teamName'] %}
+                    <option value="{{team['teamID']}}">{{team['teamName']}}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </td>
+
+            <td><select name="taskMemberID" size="1" >
+                <option value="{{item['memberID']}}">{{item['fullName']}}</option>
+                {% for member in members %}
+                    {% if member['fullName'] != item['fullName'] %}
+                    <option value="{{member['memberID']}}">{{member['fullName']}}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </td>
+
+            <td class="col-act">
+                <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+            </td>
         </form>
     </tr>
     {% endfor %}
