@@ -1,6 +1,3 @@
--- Create database -
-CREATE DATABASE 340_project;
-
 -- Create tables -
 CREATE TABLE Projects (
     projectID INT AUTO_INCREMENT PRIMARY KEY NOT NULL, 
