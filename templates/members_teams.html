@@ -3,21 +3,73 @@
 {% block content %}
 <h1 class="center">Members_Teams Page</h1>
 <h3 class="center">Assign members to teams</h3>
-<a class="topleft" href="/"><button type="button">Back</button></a>
-<form action="#" method="post">
-    <table>
+<table id="table-data" style="width:30%;">
+    <tr>
+        <th><label>mapID</label></th>
+        <th><label>memberID</label></th>
+        <th><label>teamID</label></th>
+    </tr>
+    <tr>
+        <form action="#" method="post">
+            <td>
+                <input type="hidden" name="page" value="membersTeamsPage">
+                <input type="text" name="mapID" placeholder="PK" readonly />
+            </td>
+            <td>
+                <select name="memberID" size="1" >
+                    <option value="NULL" disabled selected>Select Member</option>
+                    {% for member in members %}
+                    <option value="{{member['memberID']}}">{{member['fullName']}}</option>
+                    {% endfor %}
+                </select>
+            </td >
+            <td>
+                <select name="teamID" size="1" >
+                    <option value="NULL" disabled selected>Select Team</option>
+                    {% for team in teams %}
+                    <option value="{{team['teamID']}}">{{team['teamName']}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <button type="submit" name="action" value="Create"><i class="fa-solid fa-plus"></i></button>
+            </td>
+        </form>
+    </tr>
+    <tr id="line-break"><td><br></td>></tr>
+    {% for item in data %}
         <tr>
-            <th><label for="mapID">mapID</label></th>
-            <th><label for="memberID">memberID</label></th>
-            <th><label for="teamID">teamID</label></th>
+            <form action="#" method="post">
+                <td>
+                    <input type="hidden" name="page" value="membersTeamsPage">
+                    <input type="text" name="mapID" value="{{item['mapID']}}" readonly />
+                </td>
+                <td>
+                    <select name="memberID" size="1" >
+                    <option value="{{item['memberID']}}">{{item['fullName']}}</option>
+                    {% for member in members %}
+                        {% if member['fullName'] != item['fullName'] %}
+                        <option value="{{member['memberID']}}">{{member['fullName']}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                 </td>
+                <td>
+                    <select name="teamID" size="1" >
+                    <option value="{{item['teamID']}}">{{item['teamName']}}</option>
+                    {% for team in teams %}
+                        {% if team['teamName'] != item['teamName'] %}
+                        <option value="{{team['teamID']}}">{{team['teamName']}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                </td>
+                <td class="col-act">
+                    <button type="submit" name="action" value="Update"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button type="submit" name="action" value="Delete"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </form>
         </tr>
-        <tr>
-            <td><input type="text" name="mapID" placeholder="PK" readonly /></td>
-            <td><input type="text" name="memberID" placeholder="FK from Members" readonly /></td>
-            <td><input type="text" name="teamID" placeholder="FK from Teams" readonly /></td>
-        </tr>
-    </table>
-    <br>
-    <input type="submit" value="Submit">
-</form>
+    {% endfor %}
+</table>
 {% endblock %}

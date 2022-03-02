@@ -14,21 +14,19 @@
 body {
     background-color: #b7ccdf;
 }
+#search-box{
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
 #table-data {
     width: 60%;
     margin-left: auto;
     margin-right: auto;
 }
-#col-grp-id {
-    width: 5%;
-}
-#col-grp-desc {
-    width: 50%;
-}
 #table-data input {
     width: 100%;
-}
-.col-act input {
-    width: 50% !important;
 }
 
