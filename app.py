@@ -256,18 +256,18 @@ def tasks():
         else:
             CRUD_operations(data)
     if usr_search:
-        sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, teams.teamName, concat(memberFName, ' ',memberLName) fullName " \
+        sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Teams.teamName, concat(memberFName, ' ',memberLName) fullName " \
                 "FROM Tasks " \
                 "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
-                "LEFT JOIN teams on Tasks.taskTeamID=teams.teamID " \
-                "LEFT JOIN members on Tasks.taskMemberID=members.memberID " \
+                "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+                "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
                 f"WHERE projectName = '{usr_search}';"
     else:
-        sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, teams.teamName, concat(memberFName, ' ',memberLName) fullName " \
+        sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Teams.teamName, concat(memberFName, ' ',memberLName) fullName " \
             "FROM Tasks " \
             "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
-            "LEFT JOIN teams on Tasks.taskTeamID=teams.teamID " \
-            "LEFT JOIN members on Tasks.taskMemberID=members.memberID " \
+            "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+            "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
             "GROUP BY Tasks.taskID;"
     result = sql_SELECT(sql)
     task_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
