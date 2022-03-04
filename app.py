@@ -3,10 +3,10 @@ import mysql.connector  # used to connect to MYSQL DB
 
 
 mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Rtruong3990",
-    database="340_project"
+    host="classmysql.engr.oregonstate.edu",
+    user="cs340_hirschet",
+    password="4824",
+    database="cs340_hirschet"
 )
 
 
@@ -296,4 +296,4 @@ def members_teams():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=3434, debug=True)
