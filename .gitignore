@@ -5,3 +5,4 @@
 pip-selfcheck.json
 pyvenv.cfg
 wsgi.py
+run.sh

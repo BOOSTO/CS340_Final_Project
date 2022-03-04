@@ -1,12 +1,16 @@
+import sys
 from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector  # used to connect to MYSQL DB
 
+if len(sys.argv) != 6:
+    print("ERROR usage: 'python3 app.py <sv_port> <db_hostname> <db_database_name> <db_username> <db_passwd>'")
+    exit()
 
 mydb = mysql.connector.connect(
-    host="classmysql.engr.oregonstate.edu",
-    user="cs340_hirschet",
-    password="4824",
-    database="cs340_hirschet"
+    host=sys.argv[2],
+    user=sys.argv[4],
+    password=sys.argv[5],
+    database=sys.argv[3]
 )
 
 
@@ -296,4 +300,4 @@ def members_teams():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3434, debug=True)
+    app.run(host='0.0.0.0', port=sys.argv[1], debug=True)
