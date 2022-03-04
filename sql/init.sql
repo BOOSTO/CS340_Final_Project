@@ -35,7 +35,7 @@ CREATE TABLE Tasks (
     taskName VARCHAR(255) NOT NULL,
     taskDesc VARCHAR(1024),
     taskPriority int NOT NULL,
-    taskDeadline DATETIME,
+    taskDeadline DATE,
     taskDifficulty int NOT NULL,
     taskDone BOOLEAN NOT NULL,
     taskProjectID int NOT NULL,
