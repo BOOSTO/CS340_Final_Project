@@ -32,4 +32,33 @@ taskProjectInput.addEventListener('change', function (event) {
     req.send();
 });
 
+// update the task's members list when a new task team is selected
+taskTeamInput.addEventListener('change', function (event) {
+    taskMemberInput.disabled = false;
+
+    // remove all children of taskMemberInput
+    while(taskMemberInput.childElementCount > 1) {
+        taskMemberInput.removeChild(taskMemberInput.lastChild)
+    }
+    taskMemberInput.firstChild.selected = true
+    // populate with result of a new query
+    var selectedTaskTeam = taskTeamInput.value
+    const req = new XMLHttpRequest();
+    req.onload = function() {
+        var res = req.response;
+        if (req.status == 200) {
+            // add each team to list
+            members = JSON.parse(req.responseText)
+            members.forEach(member => {
+                const option = document.createElement("option");
+                option.value = member.teamID;
+                option.innerText = member.fullName;
+                taskMemberInput.appendChild(option)
+            });
+        } else console.log("ERROR: couldn't get members list")
+    };
+    req.open("GET", "members-by-team?team_id="+selectedTaskTeam, true);
+    req.send();
+});
+
 console.log("up and running!");

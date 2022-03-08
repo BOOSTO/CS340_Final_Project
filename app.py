@@ -254,6 +254,15 @@ def members():
     result = sql_SELECT(sql)
     return render_template("members.html", data=result)
 
+@app.route("/members-by-team", methods=["GET"])
+def members_by_team():
+    team_id = request.args.get('team_id')
+    sql = "SELECT Members.memberID, concat(Members.memberFName, ' ', Members.memberLName) fullName FROM MembersTeams " \
+           "LEFT JOIN Members ON MembersTeams.memberID = Members.memberID " \
+           f"WHERE teamID = '{team_id}'"
+    print("EXEC QUERY: " + str(sql))
+    result = sql_SELECT(sql)
+    return jsonify(result)
 
 @app.route("/tasks", methods=["POST", "GET"])
 def tasks():
