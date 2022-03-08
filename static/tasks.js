@@ -8,12 +8,19 @@ taskProjectInput.addEventListener('change', function (event) {
     taskMemberInput.disabled = true;
 
     // remove all children of taskTeamInput
-    while(taskTeamInput.childElementCount > 1) {
-        taskTeamInput.removeChild(taskTeamInput.lastChild)
+    while(taskTeamInput.childElementCount > 0) {
+        taskTeamInput.removeChild(taskTeamInput.lastChild);
     }
-    taskTeamInput.firstChild.selected = true
+    // add the default option again
+    const option = document.createElement("option");
+    option.value = "NULL";
+    option.innerText = "Select Team";
+    option.selected = true;
+    option.disabled = true;
+    taskTeamInput.appendChild(option);
+
     // populate with result of a new query
-    var selectedTaskProject = taskProjectInput.value
+    var selectedTaskProject = taskProjectInput.value;
     const req = new XMLHttpRequest();
     req.onload = function() {
         var res = req.response;
@@ -24,9 +31,9 @@ taskProjectInput.addEventListener('change', function (event) {
                 const option = document.createElement("option");
                 option.value = team.teamID;
                 option.innerText = team.teamName;
-                taskTeamInput.appendChild(option)
+                taskTeamInput.appendChild(option);
             });
-        } else console.log("ERROR: couldn't get teams list")
+        } else console.log("ERROR: couldn't get teams list");
     };
     req.open("GET", "teams-by-proj?project_id="+selectedTaskProject, true);
     req.send();
@@ -37,25 +44,32 @@ taskTeamInput.addEventListener('change', function (event) {
     taskMemberInput.disabled = false;
 
     // remove all children of taskMemberInput
-    while(taskMemberInput.childElementCount > 1) {
-        taskMemberInput.removeChild(taskMemberInput.lastChild)
+    while(taskMemberInput.childElementCount > 0) {
+        taskMemberInput.removeChild(taskMemberInput.lastChild);
     }
-    taskMemberInput.firstChild.selected = true
+    // add the default option again
+    const option = document.createElement("option");
+    option.value = "NULL";
+    option.innerText = "Select Member";
+    option.selected = true;
+    option.disabled = true;
+    taskMemberInput.appendChild(option);
+
     // populate with result of a new query
-    var selectedTaskTeam = taskTeamInput.value
+    var selectedTaskTeam = taskTeamInput.value;
     const req = new XMLHttpRequest();
     req.onload = function() {
         var res = req.response;
         if (req.status == 200) {
             // add each team to list
-            members = JSON.parse(req.responseText)
+            members = JSON.parse(req.responseText);
             members.forEach(member => {
                 const option = document.createElement("option");
                 option.value = member.memberID;
                 option.innerText = member.fullName;
-                taskMemberInput.appendChild(option)
+                taskMemberInput.appendChild(option);
             });
-        } else console.log("ERROR: couldn't get members list")
+        } else console.log("ERROR: couldn't get members list");
     };
     req.open("GET", "members-by-team?team_id="+selectedTaskTeam, true);
     req.send();
