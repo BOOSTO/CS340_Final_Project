@@ -51,7 +51,7 @@ taskTeamInput.addEventListener('change', function (event) {
             members = JSON.parse(req.responseText)
             members.forEach(member => {
                 const option = document.createElement("option");
-                option.value = member.teamID;
+                option.value = member.memberID;
                 option.innerText = member.fullName;
                 taskMemberInput.appendChild(option)
             });

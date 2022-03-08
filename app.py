@@ -231,7 +231,6 @@ def teams():
 def teams_by_proj():
     project_id = request.args.get('project_id')
     sql = f"SELECT teamID, teamName FROM Teams WHERE teamProjectID = '{project_id}'"
-    print("EXEC QUERY: " + str(sql))
     result = sql_SELECT(sql)
     return jsonify(result)
 
@@ -260,7 +259,6 @@ def members_by_team():
     sql = "SELECT Members.memberID, concat(Members.memberFName, ' ', Members.memberLName) fullName FROM MembersTeams " \
            "LEFT JOIN Members ON MembersTeams.memberID = Members.memberID " \
            f"WHERE teamID = '{team_id}'"
-    print("EXEC QUERY: " + str(sql))
     result = sql_SELECT(sql)
     return jsonify(result)
 
