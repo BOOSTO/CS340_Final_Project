@@ -11,6 +11,7 @@ taskProjectInput.addEventListener('change', function (event) {
     while(taskTeamInput.childElementCount > 1) {
         taskTeamInput.removeChild(taskTeamInput.lastChild)
     }
+    taskTeamInput.firstChild.selected = true
     // populate with result of a new query
     var selectedTaskProject = taskProjectInput.value
     const req = new XMLHttpRequest();
