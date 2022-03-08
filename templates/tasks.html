@@ -45,7 +45,7 @@
                 </select>
             </td>
             <td>
-                <select name="taskTeamID" id="taskTeamID" size="1" >
+                <select disabled name="taskTeamID" id="taskTeamID" size="1" >
                     <option value="NULL" disabled selected>Select Team</option>
                     {% for team in teams %}
                     <option value="{{team['teamID']}}">{{team['teamName']}}</option>
@@ -53,7 +53,7 @@
                 </select>
             </td>
             <td>
-                <select name="taskMemberID" id="taskMemberID" size="1" >
+                <select disabled name="taskMemberID" id="taskMemberID" size="1" >
                     <option value="NULL" disabled selected>Select Member</option>
                     {% for member in members %}
                     <option value="{{member['memberID']}}">{{member['fullName']}}</option>
@@ -124,4 +124,5 @@
     </tr>
     {% endfor %}
 </table>
+<script src="/static/tasks.js"></script>
 {% endblock %}

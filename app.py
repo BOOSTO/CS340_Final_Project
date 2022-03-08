@@ -1,5 +1,5 @@
 import sys
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import mysql.connector  # used to connect to MYSQL DB
 
 if len(sys.argv) != 6:
@@ -227,6 +227,13 @@ def teams():
     teams_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
     return render_template("teams.html", data=result, projects=teams_projects)
 
+@app.route("/teams-by-proj", methods=["GET"])
+def teams_by_proj():
+    project_id = request.args.get('project_id')
+    sql = f"SELECT teamID, teamName FROM Teams WHERE teamProjectID = '{project_id}'"
+    print("EXEC QUERY: " + str(sql))
+    result = sql_SELECT(sql)
+    return jsonify(result)
 
 @app.route("/members", methods=["POST", "GET"])
 def members():
