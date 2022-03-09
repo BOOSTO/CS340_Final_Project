@@ -16,6 +16,52 @@ mydb = mysql.connector.connect(
 
 app = Flask(__name__)
 
+def CRUD_tasks(task):
+    try:
+        taskID = "'" + task["taskID"] + "'"
+    except:
+        taskID = None
+    taskName = "'" + task["taskName"] + "'" if task["taskName"] != "" else None
+    taskDesc = "'" + task["taskDesc"] + "'" if task["taskDesc"] != "" else None
+    taskPriority = "'" + task["taskPriority"] + "'" if task["taskPriority"] != "" else None
+    taskDeadline = "'" + task["taskDeadline"] + "'" if task["taskDeadline"] != "" else None
+    taskDifficulty = "'" + task["taskDifficulty"] + "'" if task["taskDifficulty"] != "" else None
+    try:
+        taskProjectID = "'" + task["taskProjectID"] + "'" if task["taskProjectID"] != "None" else None
+    except:
+        taskProjectID = None
+    try:
+        taskTeamID = "'" + task["taskTeamID"] + "'" if task["taskTeamID"] != "None" else None
+    except:
+        taskTeamID = None
+    try:
+        taskMemberID = "'" + task["taskMemberID"] + "'" if task["taskMemberID"] != "None" else None
+    except:
+        taskMemberID = None
+    try:
+        taskDone = "'" + task["taskDone"] + "'"
+    except:
+        taskDone = "0"
+
+    if task["action"] == "Create":
+        sql = "INSERT INTO Tasks ( taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID)
+        sql_INSERT(sql, values)
+    elif task["action"] == "Update":
+        sql = "UPDATE Tasks " \
+            f"SET taskName={taskName}, taskDesc={taskDesc}, taskPriority={taskPriority}, taskDeadline={taskDeadline}, " \
+            f"taskDifficulty={taskDifficulty}, taskDone={taskDone}, taskProjectID={taskProjectID}, taskTeamID={taskTeamID}, taskMemberID={taskMemberID} " \
+            f"WHERE taskID={taskID};"
+        print("SQL FUCK:")
+        print(sql)
+        sql_UPDATE(sql)
+    elif task["action"] == "Delete":
+        sql = f"DELETE FROM Tasks WHERE taskID={taskID}"
+        sql_DELETE(sql)
+    else:
+        print("this shouldn't happen.")
+    print(sql)
+    return
 
 def CRUD_operations(data):
     """updates mysql db depending which button user clicked"""
@@ -116,22 +162,19 @@ def CRUD_operations(data):
                 taskDone = data["taskDone"]
             except:
                 taskDone = "0"
-            try:
+            taskProjectID = "NULL"
+            if data["taskProjectID"] != "None":
                 taskProjectID = data["taskProjectID"]
-            except:
-                taskProjectID = None
-            try:
+            taskTeamID = "NULL"
+            if data["taskTeamID"] != "None":
                 taskTeamID = data["taskTeamID"]
-            except:
-                taskTeamID = None
-            try:
+            taskMemberID = "NULL"
+            if data["taskMemberID"] != "None":
                 taskMemberID = data["taskMemberID"]
-            except:
-                taskMemberID = None
             taskID = data["taskID"]
             sql = "UPDATE Tasks " \
                   f"SET taskName='{taskName}', taskDesc='{taskDesc}', taskPriority='{taskPriority}', taskDeadline='{taskDeadline}', " \
-                  f"taskDifficulty='{taskDifficulty}', taskDone='{taskDone}', taskProjectID='{taskProjectID}', taskTeamID='{taskTeamID}', taskMemberID='{taskMemberID}' " \
+                  f"taskDifficulty='{taskDifficulty}', taskDone='{taskDone}', taskProjectID={taskProjectID}, taskTeamID={taskTeamID}, taskMemberID={taskMemberID} " \
                   f"WHERE taskID='{taskID}';"
             sql_UPDATE(sql)
             return
@@ -189,6 +232,13 @@ def sql_INSERT(sql, values):
     mydb.commit()
     mycursor.close()
 
+def sql_UPDATE(sql, values):
+    """UPDATE MySQL using query"""
+    mycursor = mydb.cursor()
+    mycursor.execute(sql, values)
+    print(mycursor.rowcount, "record updated")
+    mydb.commit()
+    mycursor.close()
 
 def sql_UPDATE(sql):
     """UPDATE MySQL using query"""
@@ -291,7 +341,8 @@ def tasks():
             """If user pressed search button"""
             usr_search = data["search-input"]
         else:
-            CRUD_operations(data)
+            # CRUD_operations(data)
+            CRUD_tasks(data)
     if usr_search:
         sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
                 "FROM Tasks " \
