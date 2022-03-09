@@ -11,16 +11,16 @@
 </div>
 <table id="table-data" style="width:90%;">
     <tr>
-        <th style="width:5%;"><label>taskID</label></th>
-        <th style="width:15%;"><label>taskName</label></th>
-        <th style="width:26%;"><label>taskDesc</label></th>
-        <th style="width:5%;"><label>taskPriority</label></th>
-        <th style="width:5%;"><label>taskDeadline</label></th>
-        <th style="width:5%;"><label>taskDifficulty</label></th>
-        <th style="width:5%;"><label>taskDone</label></th>
-        <th><label>projectID</label></th>
-        <th><label>teamID</label></th>
-        <th><label>memberID</label></th>
+        <th style="width:60px;"><label>ID</label></th>
+        <th style="width:15%;"><label>Name</label></th>
+        <th style="width:26%;"><label>Description</label></th>
+        <th style="width:5%;"><label>Priority</label></th>
+        <th style="width:5%;"><label>Deadline</label></th>
+        <th style="width:5%;"><label>Difficulty</label></th>
+        <th style="width:5%;"><label>Completed</label></th>
+        <th><label>Project</label></th>
+        <th><label>Team</label></th>
+        <th><label>Assignee</label></th>
         <th><label>Actions</label></th>
     </tr>
     <tr>
@@ -35,10 +35,10 @@
             <td><input  type="text" name="taskPriority"/></td>
             <td><input  type="date" name="taskDeadline"/></td>
             <td><input  type="text" name="taskDifficulty"/></td>
-            <td><input  type="checkbox" name="taskDone" value="1"/></td>
+            <td><input class="checkbox" type="checkbox" name="taskDone" value="1"/></td>
             <td>
                 <select name="taskProjectID" id="taskProjectID" size="1" >
-                    <option value="NULL" disabled selected>Select Project</option>
+                    <option value="None" disabled selected>Select Project</option>
                     {% for project in projects %}
                     <option value="{{project['projectID']}}">{{project['projectName']}}</option>
                     {% endfor %}
@@ -46,7 +46,7 @@
             </td>
             <td>
                 <select disabled name="taskTeamID" id="taskTeamID" size="1" >
-                    <option value="NULL" disabled selected>Select Team</option>
+                    <option value="None" disabled selected>Select Team</option>
                     {% for team in teams %}
                     <option value="{{team['teamID']}}">{{team['teamName']}}</option>
                     {% endfor %}
@@ -54,7 +54,7 @@
             </td>
             <td>
                 <select disabled name="taskMemberID" id="taskMemberID" size="1" >
-                    <option value="NULL" disabled selected>Select Member</option>
+                    <option value="None" disabled selected>Select Member</option>
                     {% for member in members %}
                     <option value="{{member['memberID']}}">{{member['fullName']}}</option>
                     {% endfor %}
@@ -81,9 +81,9 @@
             <td><input type="text" name="taskDifficulty" value="{{item['taskDifficulty']}}" /></td>
 
             {% if item['taskDone'] == 0 %}
-                <td><input  type="checkbox" name="taskDone" value="1"/></td>
+                <td><input class="checkbox" type="checkbox" name="taskDone" value="1"/></td>
             {% else %}
-                <td><input  type="checkbox" name="taskDone" value="1" checked/></td>
+                <td><input class="checkbox" type="checkbox" name="taskDone" value="1" checked/></td>
             {% endif %}
 
             <td><select name="taskProjectID" size="1" >
