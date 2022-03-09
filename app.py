@@ -293,14 +293,14 @@ def tasks():
         else:
             CRUD_operations(data)
     if usr_search:
-        sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Teams.teamName, concat(memberFName, ' ',memberLName) fullName " \
+        sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
                 "FROM Tasks " \
                 "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
                 "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
                 "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
                 f"WHERE projectName = '{usr_search}';"
     else:
-        sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Teams.teamName, concat(memberFName, ' ',memberLName) fullName " \
+        sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
             "FROM Tasks " \
             "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
             "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
