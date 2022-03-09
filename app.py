@@ -18,28 +18,28 @@ app = Flask(__name__)
 
 def CRUD_tasks(task):
     try:
-        taskID = "'" + task["taskID"] + "'"
+        taskID = task["taskID"]
     except:
         taskID = None
-    taskName = "'" + task["taskName"] + "'" if task["taskName"] != "" else None
-    taskDesc = "'" + task["taskDesc"] + "'" if task["taskDesc"] != "" else None
-    taskPriority = "'" + task["taskPriority"] + "'" if task["taskPriority"] != "" else None
-    taskDeadline = "'" + task["taskDeadline"] + "'" if task["taskDeadline"] != "" else None
-    taskDifficulty = "'" + task["taskDifficulty"] + "'" if task["taskDifficulty"] != "" else None
+    taskName = task["taskName"] if task["taskName"] != "" else None
+    taskDesc = task["taskDesc"] if task["taskDesc"] != "" else None
+    taskPriority = task["taskPriority"] if task["taskPriority"] != "" else None
+    taskDeadline = task["taskDeadline"] if task["taskDeadline"] != "" else None
+    taskDifficulty = task["taskDifficulty"] if task["taskDifficulty"] != "" else None
     try:
-        taskProjectID = "'" + task["taskProjectID"] + "'" if task["taskProjectID"] != "None" else None
+        taskProjectID = task["taskProjectID"] if task["taskProjectID"] != "None" else None
     except:
         taskProjectID = None
     try:
-        taskTeamID = "'" + task["taskTeamID"] + "'" if task["taskTeamID"] != "None" else None
+        taskTeamID = task["taskTeamID"] if task["taskTeamID"] != "None" else None
     except:
         taskTeamID = None
     try:
-        taskMemberID = "'" + task["taskMemberID"] + "'" if task["taskMemberID"] != "None" else None
+        taskMemberID = task["taskMemberID"] if task["taskMemberID"] != "None" else None
     except:
         taskMemberID = None
     try:
-        taskDone = "'" + task["taskDone"] + "'"
+        taskDone = task["taskDone"]
     except:
         taskDone = "0"
 
@@ -49,18 +49,16 @@ def CRUD_tasks(task):
         sql_INSERT(sql, values)
     elif task["action"] == "Update":
         sql = "UPDATE Tasks " \
-            f"SET taskName={taskName}, taskDesc={taskDesc}, taskPriority={taskPriority}, taskDeadline={taskDeadline}, " \
-            f"taskDifficulty={taskDifficulty}, taskDone={taskDone}, taskProjectID={taskProjectID}, taskTeamID={taskTeamID}, taskMemberID={taskMemberID} " \
-            f"WHERE taskID={taskID};"
-        print("SQL FUCK:")
-        print(sql)
-        sql_UPDATE(sql)
+            "SET taskName=%s, taskDesc=%s, taskPriority=%s, taskDeadline=%s, " \
+            "taskDifficulty=%s, taskDone=%s, taskProjectID=%s, taskTeamID=%s, taskMemberID=%s " \
+            "WHERE taskID=%s;"
+        values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID, taskID)
+        sql_UPDATE_WV(sql, values)
     elif task["action"] == "Delete":
         sql = f"DELETE FROM Tasks WHERE taskID={taskID}"
         sql_DELETE(sql)
     else:
         print("this shouldn't happen.")
-    print(sql)
     return
 
 def CRUD_operations(data):
@@ -232,7 +230,7 @@ def sql_INSERT(sql, values):
     mydb.commit()
     mycursor.close()
 
-def sql_UPDATE(sql, values):
+def sql_UPDATE_WV(sql, values):
     """UPDATE MySQL using query"""
     mycursor = mydb.cursor()
     mycursor.execute(sql, values)
