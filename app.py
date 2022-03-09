@@ -49,9 +49,18 @@ def CRUD_operations(data):
             taskPriority = data["taskPriority"]
             taskDeadline = data["taskDeadline"]
             taskDifficulty = data["taskDifficulty"]
-            taskProjectID = data["taskProjectID"]
-            taskTeamID = data["taskTeamID"]
-            taskMemberID = data["taskMemberID"]
+            try:
+                taskProjectID = data["taskProjectID"]
+            except:
+                taskProjectID = None
+            try:
+                taskTeamID = data["taskTeamID"]
+            except:
+                taskTeamID = None
+            try:
+                taskMemberID = data["taskMemberID"]
+            except:
+                taskMemberID = None
             try:
                 taskDone = data["taskDone"]
             except:
@@ -107,9 +116,18 @@ def CRUD_operations(data):
                 taskDone = data["taskDone"]
             except:
                 taskDone = "0"
-            taskProjectID = data["taskProjectID"]
-            taskTeamID = data["taskTeamID"]
-            taskMemberID = data["taskMemberID"]
+            try:
+                taskProjectID = data["taskProjectID"]
+            except:
+                taskProjectID = None
+            try:
+                taskTeamID = data["taskTeamID"]
+            except:
+                taskTeamID = None
+            try:
+                taskMemberID = data["taskMemberID"]
+            except:
+                taskMemberID = None
             taskID = data["taskID"]
             sql = "UPDATE Tasks " \
                   f"SET taskName='{taskName}', taskDesc='{taskDesc}', taskPriority='{taskPriority}', taskDeadline='{taskDeadline}', " \
