@@ -29,4 +29,9 @@ body {
 #table-data input {
     width: 100%;
 }
-
+select {
+    width: 100%;
+}
+input.checkbox {
+    transform: scale(2);
+}
