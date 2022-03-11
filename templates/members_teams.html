@@ -45,12 +45,12 @@
             </td>
         </form>
     </tr>
-    <tr id="line-break"><td><br></td>></tr>
+    <tr id="line-break"><td><br></td></tr>
     {% for item in data %}
         <tr>
             <form action="#" method="post">
                 <td>
-                    <input type="hidden" name="page" value="membersTeamsPage">
+                    <input type="hidden" name="page" value="membersTeamsPage"/>
                     <input type="text" name="mapID" value="{{item['mapID']}}" readonly />
                 </td>
                 <td>
