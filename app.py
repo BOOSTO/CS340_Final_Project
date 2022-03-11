@@ -12,10 +12,12 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "megasecretkey"
 
 
-def CRUD_projects(usr_input):
+def CRUD_projects(data):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
     projectID = usr_input["projectID"]
-    projectName = usr_input["projectName"] if usr_input["projectName"] != "" else None
-    projectDesc = usr_input["projectDesc"] if usr_input["projectDesc"] != "" else None
+    projectName = usr_input["projectName"]
+    projectDesc = usr_input["projectDesc"]
     if usr_input["action"] == "Create":
         sql = "INSERT INTO Projects (projectName, projectDesc) VALUES (%s,%s)"
         values = (projectName, projectDesc)
@@ -32,11 +34,13 @@ def CRUD_projects(usr_input):
     return
 
 
-def CRUD_members(usr_input):
+def CRUD_members(data):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
     memberID = usr_input["memberID"]
-    memberFName = usr_input["memberFName"] if usr_input["memberFName"] != "" else None
-    memberLName = usr_input["memberLName"] if usr_input["memberLName"] != "" else None
-    memberEmail = usr_input["memberEmail"] if usr_input["memberEmail"] != "" else None
+    memberFName = usr_input["memberFName"]
+    memberLName = usr_input["memberLName"]
+    memberEmail = usr_input["memberEmail"]
     if usr_input["action"] == "Create":
         sql = "INSERT INTO Members (memberFName, memberLName, memberEmail) VALUES (%s,%s,%s)"
         values = (memberFName, memberLName, memberEmail)
@@ -53,14 +57,13 @@ def CRUD_members(usr_input):
     return
 
 
-def CRUD_teams(usr_input):
+def CRUD_teams(data):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
     teamID = usr_input["teamID"]
-    teamName = usr_input["teamName"] if usr_input["teamName"] != "" else None
-    teamDesc = usr_input["teamDesc"] if usr_input["teamDesc"] != "" else None
-    try:
-        teamProjectID = usr_input["teamProjectID"] if usr_input["teamProjectID"] != "" else None
-    except:
-        teamProjectID = None
+    teamName = usr_input["teamName"]
+    teamDesc = usr_input["teamDesc"]
+    teamProjectID = usr_input["teamProjectID"] if "teamProjectID" in usr_input else None
     if usr_input["action"] == "Create":
         sql = "INSERT INTO Teams (teamName, teamDesc, teamProjectID) VALUES (%s,%s,%s)"
         values = (teamName, teamDesc, teamProjectID)
@@ -78,7 +81,6 @@ def CRUD_teams(usr_input):
 
 
 def CRUD_tasks(task):
-    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
     try:
         taskID = task["taskID"]
     except:
@@ -124,16 +126,41 @@ def CRUD_tasks(task):
     return
 
 
+def CRUD_tasks2(data):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
+    taskID = usr_input["taskID"]
+    taskName = usr_input["taskName"]
+    taskDesc = usr_input["taskDesc"]
+    taskPriority = usr_input["taskPriority"]
+    taskDeadline = usr_input["taskDeadline"]
+    taskDifficulty = usr_input["taskDifficulty"]
+    taskProjectID = usr_input["taskProjectID"] if "taskProjectID" in usr_input else None
+    taskTeamID = usr_input["taskTeamID"] if "taskTeamID" in usr_input else None
+    taskMemberID = usr_input["taskMemberID"] if "taskMemberID" in usr_input else None
+    taskDone = usr_input["taskDone"] if "taskDone" in usr_input else "0"
+    if usr_input["action"] == "Create":
+        sql = "INSERT INTO Tasks ( taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID)
+        sql_INSERT(sql, values)
+    elif usr_input["action"] == "Update":
+        sql = "UPDATE Tasks " \
+              "SET taskName=%s, taskDesc=%s, taskPriority=%s, taskDeadline=%s, " \
+              "taskDifficulty=%s, taskDone=%s, taskProjectID=%s, taskTeamID=%s, taskMemberID=%s " \
+              "WHERE taskID=%s;"
+        values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID, taskID)
+        sql_UPDATE(sql, values)
+    elif usr_input["action"] == "Delete":
+        sql = f"DELETE FROM Tasks WHERE taskID={taskID}"
+        sql_DELETE(sql)
+    return
+
+
 def CRUD_membersteams(usr_input):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
     mapID = usr_input["mapID"]
-    try:
-        teamID = usr_input["teamID"]
-    except:
-        teamID = None
-    try:
-        memberID = usr_input["memberID"]
-    except:
-        memberID = None
+    teamID = usr_input["teamID"] if "teamID" in usr_input else None
+    memberID = usr_input["memberID"] if "memberID" in usr_input else None
     if usr_input["action"] == "Create":
         sql = "INSERT INTO MembersTeams (memberID, teamID) VALUES (%s, %s)"
         values = (memberID, teamID)
