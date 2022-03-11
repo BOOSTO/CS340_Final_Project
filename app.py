@@ -80,53 +80,7 @@ def CRUD_teams(data):
     return
 
 
-def CRUD_tasks(task):
-    try:
-        taskID = task["taskID"]
-    except:
-        taskID = None
-    taskName = task["taskName"] if task["taskName"] != "" else None
-    taskDesc = task["taskDesc"] if task["taskDesc"] != "" else None
-    taskPriority = task["taskPriority"] if task["taskPriority"] != "" else None
-    taskDeadline = task["taskDeadline"] if task["taskDeadline"] != "" else None
-    taskDifficulty = task["taskDifficulty"] if task["taskDifficulty"] != "" else None
-    try:
-        taskProjectID = task["taskProjectID"] if task["taskProjectID"] != "None" else None
-    except:
-        taskProjectID = None
-    try:
-        taskTeamID = task["taskTeamID"] if task["taskTeamID"] != "None" else None
-    except:
-        taskTeamID = None
-    try:
-        taskMemberID = task["taskMemberID"] if task["taskMemberID"] != "None" else None
-    except:
-        taskMemberID = None
-    try:
-        taskDone = task["taskDone"]
-    except:
-        taskDone = "0"
-
-    if task["action"] == "Create":
-        sql = "INSERT INTO Tasks ( taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID)
-        sql_INSERT(sql, values)
-    elif task["action"] == "Update":
-        sql = "UPDATE Tasks " \
-              "SET taskName=%s, taskDesc=%s, taskPriority=%s, taskDeadline=%s, " \
-              "taskDifficulty=%s, taskDone=%s, taskProjectID=%s, taskTeamID=%s, taskMemberID=%s " \
-              "WHERE taskID=%s;"
-        values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID, taskID)
-        sql_UPDATE(sql, values)
-    elif task["action"] == "Delete":
-        sql = f"DELETE FROM Tasks WHERE taskID={taskID}"
-        sql_DELETE(sql)
-    else:
-        print("this shouldn't happen.")
-    return
-
-
-def CRUD_tasks2(data):
+def CRUD_tasks(data):
     """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
     usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
     taskID = usr_input["taskID"]
@@ -240,6 +194,15 @@ def user_input_validation(CRUD_page, data):
         flash(f"{action} Failed: {err}")
 
 
+def replace_None_with_emp_str(elements):
+    newelements = []
+    for item in elements:
+        item = {k: "" if v is None else v for k, v in item.items()}
+        newelements.append(item)
+    print(newelements)
+    return newelements
+
+
 @app.route("/", methods=["POST", "GET"])
 def home():
     """Home Page"""
@@ -261,7 +224,8 @@ def projects():
         sql = f"SELECT * FROM Projects WHERE projectName = '{usr_search}';"
     else:
         sql = "SELECT * FROM Projects"
-    result = sql_SELECT(sql)
+    #result = sql_SELECT(sql)
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     return render_template("projects.html", data=result)
 
 
@@ -272,9 +236,12 @@ def teams():
         data = request.form
         print(data)
         user_input_validation(CRUD_teams, data)
-    result = sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
-                        "FROM Teams "
-                        "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID")
+    #result = sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
+    #                    "FROM Teams "
+    #                    "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID")
+    result = replace_None_with_emp_str(sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
+                                                  "FROM Teams "
+                                                  "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID"))
     teams_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
     return render_template("teams.html", data=result, projects=teams_projects)
 
@@ -300,7 +267,8 @@ def members():
         sql = f"SELECT * FROM Members WHERE memberEmail = '{usr_search}';"
     else:
         sql = "SELECT * FROM Members"
-    result = sql_SELECT(sql)
+    #result = sql_SELECT(sql)
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     return render_template("members.html", data=result)
 
 @app.route("/members-by-team", methods=["GET"])
@@ -337,11 +305,13 @@ def tasks():
               "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
               "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
               "GROUP BY Tasks.taskID;"
-    result = sql_SELECT(sql)
+              
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     task_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
     task_teams = sql_SELECT("SELECT teamID, teamName FROM Teams")  # dropdown for teamID=teamName
     task_members = sql_SELECT("SELECT memberID, concat(memberFName, ' ',memberLName) fullName FROM Members")  # dropwodnw for memberID=fullName
     return render_template("tasks.html", data=result, projects=task_projects, teams=task_teams, members=task_members)
+
 
 @app.route("/members_teams", methods=["POST", "GET"])
 def members_teams():
@@ -355,7 +325,8 @@ def members_teams():
           "LEFT JOIN Members ON MembersTeams.memberID=Members.memberID " \
           "LEFT JOIN Teams on MembersTeams.teamID=Teams.teamID " \
           "GROUP BY mapID;"
-    result = sql_SELECT(sql)
+    #result = sql_SELECT(sql)
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     mm_members = sql_SELECT("SELECT memberID, concat(memberFName, ' ',memberLName) fullName FROM Members")  # dropdown for memberID=fullName
     mm_teams = sql_SELECT("SELECT teamID, teamName FROM Teams")  # dropdown for teamID=teamName
     return render_template("members_teams.html", data=result, members=mm_members, teams=mm_teams)
