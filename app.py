@@ -1,18 +1,11 @@
 import sys
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 import mysql.connector  # used to connect to MYSQL DB
-import traceback
 
 
 if len(sys.argv) != 6:
     print("ERROR usage: 'python3 app.py <sv_port> <db_hostname> <db_database_name> <db_username> <db_passwd>'")
     exit()
-mydb = mysql.connector.connect(
-    host=sys.argv[2],
-    user=sys.argv[4],
-    password=sys.argv[5],
-    database=sys.argv[3]
-)
 
 
 app = Flask(__name__)
@@ -157,46 +150,63 @@ def CRUD_membersteams(usr_input):
     return
 
 
+def connect_to_db():
+    mydb = mysql.connector.connect(
+        host=sys.argv[2],
+        user=sys.argv[4],
+        password=sys.argv[5],
+        database=sys.argv[3])
+    return mydb
+
+
 def sql_SELECT(sql):
     """SELECT MySQL using query"""
+    mydb = connect_to_db()
     mycursor = mydb.cursor(dictionary=True)
     mycursor.execute(sql)
     result = mycursor.fetchall()
     mycursor.close()
+    mydb.close()
     return result
 
 
 def sql_INSERT(sql, values):
     """INSERT into MySQL using query and values"""
+    mydb = connect_to_db()
     mycursor = mydb.cursor()
     mycursor.execute(sql, values)
     print(mycursor.rowcount, "record inserted.")
     mydb.commit()
     mycursor.close()
+    mydb.close()
 
 
 def sql_UPDATE(sql, values):
     """UPDATE MySQL using query that has Null values"""
+    mydb = connect_to_db()
     mycursor = mydb.cursor()
     mycursor.execute(sql, values)
     print(mycursor.rowcount, "record updated")
     mydb.commit()
     mycursor.close()
+    mydb.close()
 
 
 def sql_DELETE(sql):
     """DELETE MySQL row using ID"""
+    mydb = connect_to_db()
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     print(mycursor.rowcount, "record deleted")
     mydb.commit()
     mycursor.close()
+    mydb.close()
 
 
-def user_input_validation(CRUD_function, data):
+def user_input_validation(CRUD_page, data):
     """Tries to do CRUD operation. If invalid input, show error for user to see"""
     try:
-        CRUD_function(data)
+        CRUD_page(data)
     except Exception as err:
         err = str(err)[str(err).find(':') + 2:]
         action = data["action"]
