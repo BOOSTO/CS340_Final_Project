@@ -3,6 +3,15 @@
 {% block content %}
 <h1 class="center">Teams Page</h1>
 <h3 class="center">Add/Modify/Delete teams</h3>
+<div class="center">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <h2>{{message}}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 <table id="table-data">
     <tr>
         <th style="width:5%;"><label>teamID</label></th>

@@ -9,6 +9,15 @@
         <input type="submit" name="search" value="Go">
     </form>
 </div>
+<div class="center">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <h2>{{message}}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 <table id="table-data" style="width:90%;">
     <tr>
         <th style="width:60px;"><label>ID</label></th>
