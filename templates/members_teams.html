@@ -45,7 +45,7 @@
                     <input type="text" name="mapID" value="{{item['mapID']}}" readonly />
                 </td>
                 <td>
-                    <select name="memberID" size="1" >
+                    <select name="memberID" id="memberID" size="1" >
                     <option value="{{item['memberID']}}">{{item['fullName']}}</option>
                     {% for member in members %}
                         {% if member['fullName'] != item['fullName'] %}
@@ -55,7 +55,7 @@
                     </select>
                  </td>
                 <td>
-                    <select name="teamID" size="1" >
+                    <select name="teamID" id="teamID" size="1" >
                     <option value="{{item['teamID']}}">{{item['teamName']}}</option>
                     {% for team in teams %}
                         {% if team['teamName'] != item['teamName'] %}
