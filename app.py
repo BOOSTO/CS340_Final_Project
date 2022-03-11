@@ -205,7 +205,8 @@ def user_input_validation(CRUD_function, data):
         CRUD_function(data)
     except Exception as err:
         err = str(err)[str(err).find(':') + 2:]
-        flash(err)
+        action = data["action"]
+        flash(f"{action} Failed: {err}")
 
 
 @app.route("/", methods=["POST", "GET"])
