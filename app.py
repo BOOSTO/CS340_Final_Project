@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 import mysql.connector  # used to connect to MYSQL DB
 
 
-"""
+
 if len(sys.argv) != 6:
     print("ERROR usage: 'python3 app.py <sv_port> <db_hostname> <db_database_name> <db_username> <db_passwd>'")
     exit()
@@ -13,12 +13,7 @@ mydb = mysql.connector.connect(
     password=sys.argv[5],
     database=sys.argv[3]
 )
-"""
-mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Rtruong3990",
-        database="340_project")
+
 
 app = Flask(__name__)
 
@@ -489,5 +484,5 @@ def members_teams():
 
 
 if __name__ == "__main__":
-    #app.run(host='0.0.0.0', port=sys.argv[1], debug=True)
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=sys.argv[1], debug=True)
+    #app.run(debug=True)
