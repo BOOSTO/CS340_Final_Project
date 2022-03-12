@@ -252,6 +252,29 @@ def teams_by_proj():
     result = sql_SELECT(sql)
     return jsonify(result)
 
+@app.route("/teams-by-task", methods=["GET"])
+def teams_by_task():
+    task_id = request.args.get('task_id')
+    sql = f"SELECT teamID, teamName FROM Teams WHERE teamID = (SELECT taskTeamID FROM Tasks WHERE taskID = '{task_id}') " \
+        "UNION " \
+        f"SELECT teamID, teamName FROM Teams WHERE teamProjectID = (SELECT taskProjectID FROM Tasks WHERE taskID = '{task_id}')"
+    null_check = f"(SELECT taskTeamID FROM Tasks WHERE taskID = '{task_id}') "
+    result = sql_SELECT(sql)
+    null_check = sql_SELECT(null_check)[0]['taskTeamID']
+    # create the none option
+    opt_none = {}
+    opt_none['teamID'] = None
+    opt_none['teamName'] = "No Team"
+    print("THIS IS A TEST:")
+    print(type(result[0]))
+    # if null check fails (we have a selected team)
+    if (null_check):
+        result.append(opt_none)
+    # otherwise we don't (make none option first item)
+    else:
+        result.insert(0, opt_none)
+    return jsonify(result)
+
 @app.route("/members", methods=["POST", "GET"])
 def members():
     """Members Page"""
@@ -308,9 +331,7 @@ def tasks():
               
     result = replace_None_with_emp_str(sql_SELECT(sql))
     task_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
-    task_teams = sql_SELECT("SELECT teamID, teamName FROM Teams")  # dropdown for teamID=teamName
-    task_members = sql_SELECT("SELECT memberID, concat(memberFName, ' ',memberLName) fullName FROM Members")  # dropwodnw for memberID=fullName
-    return render_template("tasks.html", data=result, projects=task_projects, teams=task_teams, members=task_members)
+    return render_template("tasks.html", data=result, projects=task_projects)
 
 
 @app.route("/members_teams", methods=["POST", "GET"])

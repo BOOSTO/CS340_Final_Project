@@ -70,12 +70,12 @@
     </tr>
     <tr id="line-break"><td><br></td></tr>
     {% for item in data %}
-    <tr>
+    <tr class="data-row">
         <form method="POST" action="#">
             <td>
                 <input type="hidden" name="search" value="No">
                 <input type="hidden" name="page" value="taskPage">
-                <input type="text" name="taskID" value="{{item['taskID']}}" readonly />
+                <input type="text" class="row-task-id" name="taskID" value="{{item['taskID']}}" readonly />
             </td>
             <td><input type="text" name="taskName" value="{{item['taskName']}}" /></td>
             <td><input type="text" name="taskDesc" value="{{item['taskDesc']}}" /></td>
