@@ -56,17 +56,11 @@
             <td>
                 <select disabled name="taskTeamID" id="taskTeamID" size="1" >
                     <option value="None" disabled selected>Select Team</option>
-                    {% for team in teams %}
-                    <option value="{{team['teamID']}}">{{team['teamName']}}</option>
-                    {% endfor %}
                 </select>
             </td>
             <td>
                 <select disabled name="taskMemberID" id="taskMemberID" size="1" >
                     <option value="None" disabled selected>Select Member</option>
-                    {% for member in members %}
-                    <option value="{{member['memberID']}}">{{member['fullName']}}</option>
-                    {% endfor %}
                 </select>
             </td>
             <td>
@@ -95,7 +89,7 @@
                 <td><input class="checkbox" type="checkbox" name="taskDone" value="1" checked/></td>
             {% endif %}
 
-            <td><select name="taskProjectID" size="1" >
+            <td><select class="select-project" name="taskProjectID" size="1" >
                 <option value="{{item['projectID']}}">{{item['projectName']}}</option>
                 {% for project in projects %}
                     {% if project['projectName'] != item['projectName'] %}
@@ -105,23 +99,11 @@
                 </select>
             </td>
 
-            <td><select name="taskTeamID" size="1" >
-                <option value="{{item['teamID']}}">{{item['teamName']}}</option>
-                {% for team in teams %}
-                    {% if team['teamName'] != item['teamName'] %}
-                    <option value="{{team['teamID']}}">{{team['teamName']}}</option>
-                    {% endif %}
-                {% endfor %}
+            <td><select class="select-team" name="taskTeamID" size="1" >
                 </select>
             </td>
 
-            <td><select name="taskMemberID" size="1" >
-                <option value="{{item['memberID']}}">{{item['fullName']}}</option>
-                {% for member in members %}
-                    {% if member['fullName'] != item['fullName'] %}
-                    <option value="{{member['memberID']}}">{{member['fullName']}}</option>
-                    {% endif %}
-                {% endfor %}
+            <td><select class="select-member" name="taskMemberID" size="1" >
                 </select>
             </td>
 
