@@ -304,11 +304,11 @@ def members_by_team():
 @app.route("/members-by-task", methods=["GET"])
 def members_by_task():
     task_id = request.args.get('task_id')
-    sql = f"SELECT Members.memberID, concat(Members.memberFName, ' ', Members.memberLName) fullName FROM Members WHERE Members.memberID = (SELECT taskMemberID FROM Tasks WHERE taskID = '{task_id}') " \
+    sql = f"SELECT memberID, concat(memberFName, ' ', memberLName) fullName FROM Members WHERE memberID = (SELECT taskMemberID FROM Tasks WHERE taskID = '{task_id}') " \
         "UNION " \
         f"SELECT Members.memberID, concat(Members.memberFName, ' ', Members.memberLName) fullName FROM MembersTeams " \
         "LEFT JOIN Members ON MembersTeams.memberID = Members.memberID " \
-        f"WHERE Members.memberID = (SELECT taskProjectID FROM Tasks WHERE taskID = '{task_id}')"
+        f"WHERE MembersTeams.teamID = (SELECT taskTeamID FROM Tasks WHERE taskID = '{task_id}')"
     null_check = f"(SELECT taskMemberID FROM Tasks WHERE taskID = '{task_id}') "
     result = sql_SELECT(sql)
     null_check = sql_SELECT(null_check)[0]['taskMemberID']
