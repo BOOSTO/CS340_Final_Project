@@ -83,31 +83,59 @@ member_selects = document.getElementsByClassName("select-member");
 for (let i = 0; i < id_inputs.length; ++i) {
     // isolate a single row
     task_id = id_inputs[i].value;
-    project_select = project_selects[i];
-    team_select = team_selects[i];
-    member_select = member_selects[i];
 
     //populate its teams options
-    const req = new XMLHttpRequest();
-    req.onload = function() {
-        var res = req.response;
-        if (req.status == 200) {
-            // add each team to list
-            first_element = true;
-            teams = JSON.parse(req.responseText);
-            teams.reverse().forEach(team => {
-                const option = document.createElement("option");
-                option.value = team.teamID;
-                option.innerText = team.teamName;
-                team_selects[i].appendChild(option);
-                if (first_element) {
-                    team_selects[i].value = option.value
-                }
-            });
-        } else console.log("ERROR: couldn't get task teams list");
-    };
-    req.open("GET", "teams-by-task?task_id="+task_id, true);
-    req.send();
+    {
+        const req = new XMLHttpRequest();
+        req.onload = function() {
+            var res = req.response;
+            if (req.status == 200) {
+                // add each team to list
+                first_element = true;
+                teams = JSON.parse(req.responseText);
+                teams.forEach(team => {
+                    const option = document.createElement("option");
+                    option.value = team.teamID;
+                    option.innerText = team.teamName;
+                    team_selects[i].appendChild(option);
+                    if (first_element) {
+                        team_selects[i].value = option.value;
+                        if (option.value == "") {
+                            member_selects[i].disabled = true;
+                        }
+                        first_element = false;
+                    }
+                });
+            } else console.log("ERROR: couldn't get task teams list");
+        };
+        req.open("GET", "teams-by-task?task_id="+task_id, true);
+        req.send();
+    }
+
+    //populate its members options
+    {
+        const req = new XMLHttpRequest();
+        req.onload = function() {
+            var res = req.response;
+            if (req.status == 200) {
+                // add each team to list
+                first_element = true;
+                members = JSON.parse(req.responseText);
+                members.forEach(member => {
+                    const option = document.createElement("option");
+                    option.value = member.memberID;
+                    option.innerText = member.fullName;
+                    member_selects[i].appendChild(option);
+                    if (first_element) {
+                        member_selects[i].value = option.value;
+                        first_element = false;
+                    }
+                });
+            } else console.log("ERROR: couldn't get task members list");
+        };
+        req.open("GET", "members-by-task?task_id="+task_id, true);
+        req.send();
+    }
 }
 
 console.log("up and running!");

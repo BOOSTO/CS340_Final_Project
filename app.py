@@ -263,10 +263,8 @@ def teams_by_task():
     null_check = sql_SELECT(null_check)[0]['taskTeamID']
     # create the none option
     opt_none = {}
-    opt_none['teamID'] = None
+    opt_none['teamID'] = ""
     opt_none['teamName'] = "No Team"
-    print("THIS IS A TEST:")
-    print(type(result[0]))
     # if null check fails (we have a selected team)
     if (null_check):
         result.append(opt_none)
@@ -301,6 +299,29 @@ def members_by_team():
           "LEFT JOIN Members ON MembersTeams.memberID = Members.memberID " \
           f"WHERE teamID = '{team_id}'"
     result = sql_SELECT(sql)
+    return jsonify(result)
+
+@app.route("/members-by-task", methods=["GET"])
+def members_by_task():
+    task_id = request.args.get('task_id')
+    sql = f"SELECT Members.memberID, concat(Members.memberFName, ' ', Members.memberLName) fullName FROM Members WHERE Members.memberID = (SELECT taskMemberID FROM Tasks WHERE taskID = '{task_id}') " \
+        "UNION " \
+        f"SELECT Members.memberID, concat(Members.memberFName, ' ', Members.memberLName) fullName FROM MembersTeams " \
+        "LEFT JOIN Members ON MembersTeams.memberID = Members.memberID " \
+        f"WHERE Members.memberID = (SELECT taskProjectID FROM Tasks WHERE taskID = '{task_id}')"
+    null_check = f"(SELECT taskMemberID FROM Tasks WHERE taskID = '{task_id}') "
+    result = sql_SELECT(sql)
+    null_check = sql_SELECT(null_check)[0]['taskMemberID']
+    # create the none option
+    opt_none = {}
+    opt_none['memberID'] = ""
+    opt_none['fullName'] = "No Assignee"
+    # if null check fails (we have a selected team)
+    if (null_check):
+        result.append(opt_none)
+    # otherwise we don't (make none option first item)
+    else:
+        result.insert(0, opt_none)
     return jsonify(result)
 
 @app.route("/tasks", methods=["POST", "GET"])
