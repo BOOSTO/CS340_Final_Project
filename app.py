@@ -64,6 +64,11 @@ def CRUD_teams(data):
     teamName = usr_input["teamName"]
     teamDesc = usr_input["teamDesc"]
     teamProjectID = usr_input["teamProjectID"] if "teamProjectID" in usr_input else None
+    action = usr_input["action"]
+
+    if validate_ID(teamProjectID, "Projects", action) is False:
+        return
+
     if usr_input["action"] == "Create":
         sql = "INSERT INTO Teams (teamName, teamDesc, teamProjectID) VALUES (%s,%s,%s)"
         values = (teamName, teamDesc, teamProjectID)
@@ -93,6 +98,16 @@ def CRUD_tasks(data):
     taskTeamID = usr_input["taskTeamID"] if "taskTeamID" in usr_input else None
     taskMemberID = usr_input["taskMemberID"] if "taskMemberID" in usr_input else None
     taskDone = usr_input["taskDone"] if "taskDone" in usr_input else "0"
+    action = usr_input["action"]
+
+    test_projectID, test_teamID, test_memberID = 10, 20, "30"
+    if False in (validate_ID(taskProjectID, "projectID", action),
+                 validate_ID(taskTeamID, "teamID", action),
+                 validate_ID(taskMemberID, "memberID", action),
+                 validate_relationship(taskTeamID, taskProjectID, "teamID", action),
+                 validate_relationship(taskMemberID, taskTeamID, "memberID", action)):
+        return
+
     if usr_input["action"] == "Create":
         sql = "INSERT INTO Tasks ( taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID)
@@ -115,6 +130,12 @@ def CRUD_membersteams(usr_input):
     mapID = usr_input["mapID"]
     teamID = usr_input["teamID"] if "teamID" in usr_input else None
     memberID = usr_input["memberID"] if "memberID" in usr_input else None
+    action = usr_input["action"]
+
+    if False in (validate_ID(teamID, "Teams", action),
+                 validate_ID(memberID, "Members", action)):
+        return
+
     if usr_input["action"] == "Create":
         sql = "INSERT INTO MembersTeams (memberID, teamID) VALUES (%s, %s)"
         values = (memberID, teamID)
@@ -129,6 +150,30 @@ def CRUD_membersteams(usr_input):
         sql = f"DELETE FROM MembersTeams WHERE mapID={mapID};"
         sql_DELETE(sql)
     return
+
+
+def validate_ID(inputID, tableID, action):
+    """Validates if the given ID exist in DB."""
+    print("function called")
+    table = "Projects" if tableID == "projectID" else "Teams" if tableID == "teamID" else "Members"
+    if not sql_SELECT(f"SELECT * FROM {table} WHERE {tableID}={inputID}"):
+        flash(f"{action} Failed: Could not find {tableID} = {inputID}")
+        return False
+    return True
+
+
+def validate_relationship(inputID, compareID, table_key, action):
+    """Validates if ID has a relationship with compareID. Grab all rows related to compareID and check if inputID is in it"""
+    if table_key == "teamID":
+        sql = f"SELECT teamID, teamProjectID FROM Teams WHERE teamProjectID={compareID}"
+        err = f"{action} Failed: taskTeamID:{inputID} not related to projectID:{compareID}"
+    else:
+        sql = f"SELECT memberID, teamID FROM MembersTeams WHERE teamID={compareID}"
+        err = f"{action} Failed: taskMemberID:{inputID} not related to teamID:{compareID}"
+    if int(inputID) not in [row[table_key] for row in sql_SELECT(sql)]:
+        flash(err)
+        return False
+    return True
 
 
 def connect_to_db():
@@ -199,7 +244,6 @@ def replace_None_with_emp_str(elements):
     for item in elements:
         item = {k: "" if v is None else v for k, v in item.items()}
         newelements.append(item)
-    print(newelements)
     return newelements
 
 
@@ -224,7 +268,6 @@ def projects():
         sql = f"SELECT * FROM Projects WHERE projectName = '{usr_search}';"
     else:
         sql = "SELECT * FROM Projects"
-    #result = sql_SELECT(sql)
     result = replace_None_with_emp_str(sql_SELECT(sql))
     return render_template("projects.html", data=result)
 
@@ -236,9 +279,6 @@ def teams():
         data = request.form
         print(data)
         user_input_validation(CRUD_teams, data)
-    #result = sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
-    #                    "FROM Teams "
-    #                    "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID")
     result = replace_None_with_emp_str(sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
                                                   "FROM Teams "
                                                   "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID"))
@@ -288,7 +328,6 @@ def members():
         sql = f"SELECT * FROM Members WHERE memberEmail = '{usr_search}';"
     else:
         sql = "SELECT * FROM Members"
-    #result = sql_SELECT(sql)
     result = replace_None_with_emp_str(sql_SELECT(sql))
     return render_template("members.html", data=result)
 
@@ -367,7 +406,6 @@ def members_teams():
           "LEFT JOIN Members ON MembersTeams.memberID=Members.memberID " \
           "LEFT JOIN Teams on MembersTeams.teamID=Teams.teamID " \
           "GROUP BY mapID;"
-    #result = sql_SELECT(sql)
     result = replace_None_with_emp_str(sql_SELECT(sql))
     mm_members = sql_SELECT("SELECT memberID, concat(memberFName, ' ',memberLName) fullName FROM Members")  # dropdown for memberID=fullName
     mm_teams = sql_SELECT("SELECT teamID, teamName FROM Teams")  # dropdown for teamID=teamName
