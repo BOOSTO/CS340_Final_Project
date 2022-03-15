@@ -129,8 +129,8 @@ def CRUD_membersteams(usr_input):
     memberID = usr_input["memberID"] if "memberID" in usr_input else None
     action = usr_input["action"]
 
-    if False in (validate_ID(teamID, "Teams", action),
-                 validate_ID(memberID, "Members", action)):
+    if False in (validate_ID(teamID, "teamID", action),
+                 validate_ID(memberID, "memberID", action)):
         return
 
     if usr_input["action"] == "Create":
