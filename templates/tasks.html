@@ -40,10 +40,10 @@
                 <input type="text" name="taskID" placeholder="PK" readonly />
             </td>
             <td><input type="text" name="taskName" /></td>
-            <td><input  type="text" name="taskDesc" class="input-desc"/></td>
-            <td><input  type="text" name="taskPriority"/></td>
-            <td><input  type="date" name="taskDeadline"/></td>
-            <td><input  type="text" name="taskDifficulty"/></td>
+            <td><input type="text" name="taskDesc" class="input-desc"/></td>
+            <td><input type="number" min="1" max="5" name="taskPriority"/></td>
+            <td><input type="date" name="taskDeadline"/></td>
+            <td><input type="number" min="1" max="10" name="taskDifficulty"/></td>
             <td><input class="checkbox" type="checkbox" name="taskDone" value="1"/></td>
             <td>
                 <select name="taskProjectID" id="taskProjectID" size="1" >
@@ -79,9 +79,9 @@
             </td>
             <td><input type="text" name="taskName" value="{{item['taskName']}}" /></td>
             <td><input type="text" name="taskDesc" value="{{item['taskDesc']}}" /></td>
-            <td><input type="text" name="taskPriority" value="{{item['taskPriority']}}" /></td>
+            <td><input type="number" min="1" max="5" name="taskPriority" value="{{item['taskPriority']}}" /></td>
             <td><input type="date" name="taskDeadline" value="{{item['taskDeadline']}}" /></td>
-            <td><input type="text" name="taskDifficulty" value="{{item['taskDifficulty']}}" /></td>
+            <td><input type="number" min="1" max="10" name="taskDifficulty" value="{{item['taskDifficulty']}}" /></td>
 
             {% if item['taskDone'] == 0 %}
                 <td><input class="checkbox" type="checkbox" name="taskDone" value="1"/></td>
