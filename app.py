@@ -274,6 +274,7 @@ def projects():
 @app.route("/teams", methods=["POST", "GET"])
 def teams():
     """Teams Page"""
+    usr_search = False
     if request.method == "POST":
         data = request.form
         print(data)
@@ -282,9 +283,17 @@ def teams():
         else:
             user_input_validation(CRUD_teams, data)
     # TODO: FINISH
-    result = replace_None_with_emp_str(sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
-                                                  "FROM Teams "
-                                                  "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID"))
+    if usr_search:
+        sql ="SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "\
+            f"FROM Teams LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID WHERE teamName LIKE '%{usr_search}%' UNION "\
+             "SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "\
+            f"FROM Teams LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID WHERE teamDesc LIKE '%{usr_search}%' UNION "\
+             "SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "\
+            f"FROM Teams LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID WHERE projectName LIKE '%{usr_search}%';"      
+    else:
+        sql = "SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "\
+              "FROM Teams LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID;"
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     teams_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
     return render_template("teams.html", data=result, projects=teams_projects)
 
