@@ -100,12 +100,11 @@ def CRUD_tasks(data):
     taskDone = usr_input["taskDone"] if "taskDone" in usr_input else "0"
     action = usr_input["action"]
 
-    test_projectID, test_teamID, test_memberID = 10, 20, "30"
     if False in (validate_ID(taskProjectID, "projectID", action),
-                 validate_ID(taskTeamID, "teamID", action),
-                 validate_ID(taskMemberID, "memberID", action),
-                 validate_relationship(taskTeamID, taskProjectID, "teamID", action),
-                 validate_relationship(taskMemberID, taskTeamID, "memberID", action)):
+                 validate_ID(taskTeamID, "teamID", action) if not taskTeamID == None else True,
+                 validate_ID(taskMemberID, "memberID", action) if not taskMemberID == None else True,
+                 validate_relationship(taskTeamID, taskProjectID, "teamID", action) if not taskTeamID == None else True,
+                 validate_relationship(taskMemberID, taskTeamID, "memberID", action) if not taskMemberID == None else True):
         return
 
     if usr_input["action"] == "Create":
@@ -154,7 +153,6 @@ def CRUD_membersteams(usr_input):
 
 def validate_ID(inputID, tableID, action):
     """Validates if the given ID exist in DB."""
-    print("function called")
     table = "Projects" if tableID == "projectID" else "Teams" if tableID == "teamID" else "Members"
     if not sql_SELECT(f"SELECT * FROM {table} WHERE {tableID}={inputID}"):
         flash(f"{action} Failed: Could not find {tableID} = {inputID}")
