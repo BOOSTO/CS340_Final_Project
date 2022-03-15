@@ -82,36 +82,3 @@ VALUES
     ('Survive bad guy Among Us', 'Avoid bad guy Among Us at all times or they will get you', 100, '2013-04-02', 2, False, 1, 2, 1),
     ('Save Sgt. Jognson from flood', 'Sgt. Johnson has been ambushed and needs our help', 10, '2022-12-08', 4, False, 2, 3, 2),
     ('Study Chicken', 'Try to understand why chicken crossed the road', 2, '2013-01-08', 4, True, 3, 1, 3);
-
--- get all projectID, projectName, and projectDesc to populate Project’s Page --
-SELECT * FROM Projects;
-
--- get all memberID, memberFName, memberLName, and memberEmail to populate Member’s page –
-SELECT * FROM Members;
-
--- get all teamID, teamName, teamDesc, and projectName to populate team’s page  --
-SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName
-FROM Teams
-INNER JOIN Projects ON Teams.teamID=Projects.projectID;
-
---  get all projectName to populate team’s column “Project” dropdown with all project names where teamProjectID=projectID –
-SELECT projectName FROM Projects;
-
--- get all mapID, memberID, teamID to populate membersteam’s page  --
-SELECT *  from MembersTeams;
-OR
---  get all mapID, memberEmail, teamName to populate membersteam’s page --
-SELECT mapID, Members.memberEmail, Teams.teamName
-FROM MembersTeams
-INNER JOIN Members ON MembersTeams.memberID=Members.memberID
-INNER JOIN Teams on MembersTeams.teamID=Teams.teamID;
-
---  get all taskID, taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID to populate task’s page –
-SELECT * FROM Tasks;
-OR
---  get all taskID, taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, projectName, teamName, memberEmail to populate task’s page --
-SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Teams.teamName, Members.memberEmail
-FROM Tasks
-INNER JOIN Projects ON Tasks.taskProjectID=Projects.projectID
-INNER JOIN Teams on Tasks.taskTeamID=Teams.teamID
-INNER JOIN Members on Tasks.taskMemberID=Members.memberID;

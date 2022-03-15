@@ -1,24 +1,45 @@
--- Basic C[RUD]
+-- Basic CRUD
+SELECT * FROM Projects;
+SELECT projectName FROM Projects;
 INSERT INTO Projects (projectName, projectDesc) VALUES (%s,%s);
 UPDATE Projects SET projectName=%s, projectDesc =%s WHERE projectID =%s;
 DELETE FROM Projects WHERE projectID={projectID};
 
+SELECT * FROM Members;
 INSERT INTO Members (memberFName, memberLName, memberEmail) VALUES (%s,%s,%s);
 UPDATE Members SET memberFName=%s, memberLName=%s, memberEmail=%s WHERE memberID=%s;
 DELETE FROM Members WHERE memberID={memberID};
 
+-- special select: Join on FK reference to project
+SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName
+    FROM Teams
+    INNER JOIN Projects ON Teams.teamID=Projects.projectID;
 INSERT INTO Teams (teamName, teamDesc, teamProjectID) VALUES (%s,%s,%s);
 UPDATE Teams SET teamName=%s, teamDesc=%s, teamProjectID=%s WHERE teamID=%s;
 DELETE FROM Teams WHERE teamID={teamID};
 
+SELECT * FROM Tasks;
+-- special select: Join on FK reference to project, team, and member
+SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Teams.teamName, Members.memberEmail
+    FROM Tasks
+    INNER JOIN Projects ON Tasks.taskProjectID=Projects.projectID
+    INNER JOIN Teams on Tasks.taskTeamID=Teams.teamID
+    INNER JOIN Members on Tasks.taskMemberID=Members.memberID;
 INSERT INTO Tasks ( taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
 UPDATE Tasks SET taskName=%s, taskDesc=%s, taskPriority=%s, taskDeadline=%s, taskDifficulty=%s, taskDone=%s, taskProjectID=%s, taskTeamID=%s, taskMemberID=%s WHERE taskID=%s;
 DELETE FROM Tasks WHERE taskID={taskID};
 
+SELECT * from MembersTeams;
+-- special select: Join on FK reference to member and team
+SELECT mapID, Members.memberEmail, Teams.teamName
+    FROM MembersTeams
+    INNER JOIN Members ON MembersTeams.memberID=Members.memberID
+    INNER JOIN Teams on MembersTeams.teamID=Teams.teamID;
 INSERT INTO MembersTeams (memberID, teamID) VALUES (%s, %s)
 UPDATE MembersTeams SET memberID=%s, teamID=%s WHERE mapID=%s;
 DELETE FROM MembersTeams WHERE mapID={mapID};
 
+-- misc selects
 SELECT * FROM {table} WHERE {tableID}={inputID};
 SELECT teamID, teamProjectID FROM Teams WHERE teamProjectID={compareID};
 SELECT memberID, teamID FROM MembersTeams WHERE teamID={compareID};
