@@ -263,7 +263,8 @@ def projects():
         else:
             user_input_validation(CRUD_projects, data)
     if usr_search:
-        sql = f"SELECT * FROM Projects WHERE projectName = '{usr_search}';"
+        sql = f"SELECT * FROM Projects WHERE projectName LIKE '%{usr_search}%' UNION "\
+              f"SELECT * FROM Projects WHERE projectDesc LIKE '%{usr_search}%';"
     else:
         sql = "SELECT * FROM Projects"
     result = replace_None_with_emp_str(sql_SELECT(sql))
@@ -276,7 +277,11 @@ def teams():
     if request.method == "POST":
         data = request.form
         print(data)
-        user_input_validation(CRUD_teams, data)
+        if data["search"] == "Go":  # If user pressed search button
+            usr_search = data["search-input"]
+        else:
+            user_input_validation(CRUD_teams, data)
+    # TODO: FINISH
     result = replace_None_with_emp_str(sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
                                                   "FROM Teams "
                                                   "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID"))
@@ -325,7 +330,7 @@ def members():
     if usr_search:
         sql = f"SELECT * FROM Members WHERE memberFName LIKE '%{usr_search}%' UNION "\
               f"SELECT * FROM Members WHERE memberLName LIKE '%{usr_search}%' UNION "\
-              f"SELECT * FROM Members WHERE memberEmail LIKE '%{usr_search}%';"\
+              f"SELECT * FROM Members WHERE memberEmail LIKE '%{usr_search}%';"
 
     else:
         sql = "SELECT * FROM Members"
@@ -376,12 +381,51 @@ def tasks():
         else:
             user_input_validation(CRUD_tasks, data)
     if usr_search:
+        #sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
+        #      "FROM Tasks " \
+        #      "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+         #     "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+        #      "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+        #      f"WHERE projectName = '{usr_search}';
+
         sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
-              "FROM Tasks " \
-              "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
-              "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
-              "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
-              f"WHERE projectName = '{usr_search}';"
+               "FROM Tasks " \
+               "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+               "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+               "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+               f"WHERE taskName LIKE '%{usr_search}%' UNION " \
+               "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
+               "FROM Tasks " \
+               "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+               "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+               "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+               f"WHERE taskDesc LIKE '%{usr_search}%' UNION " \
+               "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
+               "FROM Tasks " \
+               "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+               "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+               "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+               f"WHERE projectName LIKE '%{usr_search}%' UNION " \
+               "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
+               "FROM Tasks " \
+               "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+               "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+               "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+               f"WHERE teamName LIKE '%{usr_search}%' UNION " \
+               "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
+               "FROM Tasks " \
+               "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+               "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+               "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+               f"WHERE memberFName LIKE '%{usr_search}%' UNION " \
+               "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
+               "FROM Tasks " \
+               "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+               "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+               "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+               f"WHERE memberLName LIKE '%{usr_search}%';" \
+               
+
     else:
         sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
               "FROM Tasks " \

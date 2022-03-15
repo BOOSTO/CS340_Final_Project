@@ -3,6 +3,12 @@
 {% block content %}
 <h1 class="center">Teams Page</h1>
 <h3 class="center">Add/Modify/Delete teams</h3>
+<div id="search-box">
+    <form method="POST" action="/teams">
+        <input type="text" name="search-input" placeholder="Search...">
+        <input type="submit" name="search" value="Go">
+    </form>
+</div>
 <div class="center">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
