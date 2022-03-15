@@ -65,10 +65,8 @@ def CRUD_teams(data):
     teamDesc = usr_input["teamDesc"]
     teamProjectID = usr_input["teamProjectID"] if "teamProjectID" in usr_input else None
     action = usr_input["action"]
-
-    if validate_ID(teamProjectID, "Projects", action) is False:
+    if validate_ID(teamProjectID, "projectID", action) is False:
         return
-
     if usr_input["action"] == "Create":
         sql = "INSERT INTO Teams (teamName, teamDesc, teamProjectID) VALUES (%s,%s,%s)"
         values = (teamName, teamDesc, teamProjectID)
@@ -282,7 +280,6 @@ def teams():
             usr_search = data["search-input"]
         else:
             user_input_validation(CRUD_teams, data)
-    # TODO: FINISH
     if usr_search:
         sql ="SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "\
             f"FROM Teams LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID WHERE teamName LIKE '%{usr_search}%' UNION "\
