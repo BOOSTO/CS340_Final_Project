@@ -1,259 +1,206 @@
 import sys
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 import mysql.connector  # used to connect to MYSQL DB
+
 
 if len(sys.argv) != 6:
     print("ERROR usage: 'python3 app.py <sv_port> <db_hostname> <db_database_name> <db_username> <db_passwd>'")
     exit()
 
-mydb = mysql.connector.connect(
-    host=sys.argv[2],
-    user=sys.argv[4],
-    password=sys.argv[5],
-    database=sys.argv[3]
-)
-
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = "megasecretkey"
 
-def CRUD_tasks(task):
-    try:
-        taskID = task["taskID"]
-    except:
-        taskID = None
-    taskName = task["taskName"] if task["taskName"] != "" else None
-    taskDesc = task["taskDesc"] if task["taskDesc"] != "" else None
-    taskPriority = task["taskPriority"] if task["taskPriority"] != "" else None
-    taskDeadline = task["taskDeadline"] if task["taskDeadline"] != "" else None
-    taskDifficulty = task["taskDifficulty"] if task["taskDifficulty"] != "" else None
-    try:
-        taskProjectID = task["taskProjectID"] if task["taskProjectID"] != "None" else None
-    except:
-        taskProjectID = None
-    try:
-        taskTeamID = task["taskTeamID"] if task["taskTeamID"] != "None" else None
-    except:
-        taskTeamID = None
-    try:
-        taskMemberID = task["taskMemberID"] if task["taskMemberID"] != "None" else None
-    except:
-        taskMemberID = None
-    try:
-        taskDone = task["taskDone"]
-    except:
-        taskDone = "0"
 
-    if task["action"] == "Create":
+def CRUD_projects(data):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
+    projectID = usr_input["projectID"]
+    projectName = usr_input["projectName"]
+    projectDesc = usr_input["projectDesc"]
+    if usr_input["action"] == "Create":
+        sql = "INSERT INTO Projects (projectName, projectDesc) VALUES (%s,%s)"
+        values = (projectName, projectDesc)
+        sql_INSERT(sql, values)
+    elif usr_input["action"] == "Update":
+        sql = "UPDATE Projects " \
+              "SET projectName=%s, projectDesc =%s " \
+              "WHERE projectID =%s;"
+        values = (projectName, projectDesc, projectID)
+        sql_UPDATE(sql, values)
+    elif usr_input["action"] == "Delete":
+        sql = f"DELETE FROM Projects WHERE projectID={projectID};"
+        sql_DELETE(sql)
+    return
+
+
+def CRUD_members(data):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
+    memberID = usr_input["memberID"]
+    memberFName = usr_input["memberFName"]
+    memberLName = usr_input["memberLName"]
+    memberEmail = usr_input["memberEmail"]
+    if usr_input["action"] == "Create":
+        sql = "INSERT INTO Members (memberFName, memberLName, memberEmail) VALUES (%s,%s,%s)"
+        values = (memberFName, memberLName, memberEmail)
+        sql_INSERT(sql, values)
+    elif usr_input["action"] == "Update":
+        sql = "UPDATE Members " \
+              "SET memberFName=%s, memberLName=%s, memberEmail=%s " \
+              "WHERE memberID=%s;"
+        values = (memberFName, memberLName, memberEmail, memberID)
+        sql_UPDATE(sql, values)
+    elif usr_input["action"] == "Delete":
+        sql = f"DELETE FROM Members WHERE memberID={memberID};"
+        sql_DELETE(sql)
+    return
+
+
+def CRUD_teams(data):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
+    teamID = usr_input["teamID"]
+    teamName = usr_input["teamName"]
+    teamDesc = usr_input["teamDesc"]
+    teamProjectID = usr_input["teamProjectID"] if "teamProjectID" in usr_input else None
+    if usr_input["action"] == "Create":
+        sql = "INSERT INTO Teams (teamName, teamDesc, teamProjectID) VALUES (%s,%s,%s)"
+        values = (teamName, teamDesc, teamProjectID)
+        sql_INSERT(sql, values)
+    elif usr_input["action"] == "Update":
+        sql = "UPDATE Teams " \
+              "SET teamName=%s, teamDesc=%s, teamProjectID=%s " \
+              "WHERE teamID=%s;"
+        values = (teamName, teamDesc, teamProjectID, teamID)
+        sql_UPDATE(sql, values)
+    elif usr_input["action"] == "Delete":
+        sql = f"DELETE FROM Teams WHERE teamID={teamID}"
+        sql_DELETE(sql)
+    return
+
+
+def CRUD_tasks(data):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    usr_input = {k: None if not v else v for k, v in data.to_dict().items()}
+    taskID = usr_input["taskID"]
+    taskName = usr_input["taskName"]
+    taskDesc = usr_input["taskDesc"]
+    taskPriority = usr_input["taskPriority"]
+    taskDeadline = usr_input["taskDeadline"]
+    taskDifficulty = usr_input["taskDifficulty"]
+    taskProjectID = usr_input["taskProjectID"] if "taskProjectID" in usr_input else None
+    taskTeamID = usr_input["taskTeamID"] if "taskTeamID" in usr_input else None
+    taskMemberID = usr_input["taskMemberID"] if "taskMemberID" in usr_input else None
+    taskDone = usr_input["taskDone"] if "taskDone" in usr_input else "0"
+    if usr_input["action"] == "Create":
         sql = "INSERT INTO Tasks ( taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID)
         sql_INSERT(sql, values)
-    elif task["action"] == "Update":
+    elif usr_input["action"] == "Update":
         sql = "UPDATE Tasks " \
-            "SET taskName=%s, taskDesc=%s, taskPriority=%s, taskDeadline=%s, " \
-            "taskDifficulty=%s, taskDone=%s, taskProjectID=%s, taskTeamID=%s, taskMemberID=%s " \
-            "WHERE taskID=%s;"
+              "SET taskName=%s, taskDesc=%s, taskPriority=%s, taskDeadline=%s, " \
+              "taskDifficulty=%s, taskDone=%s, taskProjectID=%s, taskTeamID=%s, taskMemberID=%s " \
+              "WHERE taskID=%s;"
         values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID, taskID)
-        sql_UPDATE_WV(sql, values)
-    elif task["action"] == "Delete":
+        sql_UPDATE(sql, values)
+    elif usr_input["action"] == "Delete":
         sql = f"DELETE FROM Tasks WHERE taskID={taskID}"
         sql_DELETE(sql)
-    else:
-        print("this shouldn't happen.")
     return
 
-def CRUD_operations(data):
-    """updates mysql db depending which button user clicked"""
-    if data['action'] == 'Create':  # if button was Create
-        if data["page"] == "projectPage":
-            projectName = data["projectName"]
-            projectDesc = data["projectDesc"]
-            sql = "INSERT INTO Projects (projectName, projectDesc) VALUES (%s,%s)"
-            values = (projectName, projectDesc)
-            sql_INSERT(sql, values)
-            return
-        elif data["page"] == "memberPage":
-            memberFName = data["memberFName"]
-            memberLName = data["memberLName"]
-            memberEmail = data["memberEmail"]
-            sql = "INSERT INTO Members (memberFName, memberLName, memberEmail) VALUES (%s,%s,%s)"
-            values = (memberFName, memberLName, memberEmail)
-            sql_INSERT(sql, values)
-            return
-        elif data["page"] == "teamPage":
-            teamName = data["teamName"]
-            teamDesc = data["teamDesc"]
-            teamProjectID = data["teamProjectID"]
-            sql = "INSERT INTO Teams (teamName, teamDesc, teamProjectID) VALUES (%s,%s,%s)"
-            values = (teamName, teamDesc, teamProjectID)
-            sql_INSERT(sql, values)
-            return
-        elif data["page"] == "taskPage":
-            taskName = data["taskName"]
-            taskDesc = data["taskDesc"]
-            taskPriority = data["taskPriority"]
-            taskDeadline = data["taskDeadline"]
-            taskDifficulty = data["taskDifficulty"]
-            try:
-                taskProjectID = data["taskProjectID"]
-            except:
-                taskProjectID = None
-            try:
-                taskTeamID = data["taskTeamID"]
-            except:
-                taskTeamID = None
-            try:
-                taskMemberID = data["taskMemberID"]
-            except:
-                taskMemberID = None
-            try:
-                taskDone = data["taskDone"]
-            except:
-                taskDone = "0"
-            sql = "INSERT INTO Tasks ( taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            values = (taskName, taskDesc, taskPriority, taskDeadline, taskDifficulty, taskDone, taskProjectID, taskTeamID, taskMemberID)
-            sql_INSERT(sql, values)
-            return
-        elif data["page"] == "membersTeamsPage":
-            memberID = data["memberID"]
-            teamID = data["teamID"]
-            sql = "INSERT INTO MembersTeams (memberID, teamID) VALUES (%s, %s)"
-            values = (memberID, teamID)
-            sql_INSERT(sql, values)
-            return
-    elif data['action'] == 'Update': # if button was Update
-        if data["page"] == "projectPage":
-            projectName = data["projectName"]
-            projectDesc = data["projectDesc"]
-            projectID = data["projectID"]
-            sql = "UPDATE Projects " \
-                  f"SET projectName = '{projectName}', projectDesc = '{projectDesc}' " \
-                  f"WHERE projectID = '{projectID}'"
-            sql_UPDATE(sql)
-            return
-        elif data["page"] == "memberPage":
-            memberFName = data["memberFName"]
-            memberLName = data["memberLName"]
-            memberEmail = data["memberEmail"]
-            memberID = data["memberID"]
-            sql = "UPDATE Members " \
-                  f"SET memberFName='{memberFName}', memberLName='{memberLName}', memberEmail='{memberEmail}' " \
-                  f"WHERE memberID='{memberID}';"
-            sql_UPDATE(sql)
-            return
-        elif data["page"] == "teamPage":
-            teamName = data["teamName"]
-            teamDesc = data["teamDesc"]
-            teamProjectID = data["teamProjectID"]
-            teamID = data["teamID"]
-            sql = "UPDATE Teams " \
-                  f"SET teamName='{teamName}', teamDesc='{teamDesc}', teamProjectID='{teamProjectID}' " \
-                  f"WHERE teamID='{teamID}';"
-            sql_UPDATE(sql)
-            return
-        elif data["page"] == "taskPage":
-            taskName = data["taskName"]
-            taskDesc = data["taskDesc"]
-            taskPriority = data["taskPriority"]
-            taskDeadline = data["taskDeadline"]
-            taskDifficulty = data["taskDifficulty"]
-            try:
-                taskDone = data["taskDone"]
-            except:
-                taskDone = "0"
-            taskProjectID = "NULL"
-            if data["taskProjectID"] != "None":
-                taskProjectID = data["taskProjectID"]
-            taskTeamID = "NULL"
-            if data["taskTeamID"] != "None":
-                taskTeamID = data["taskTeamID"]
-            taskMemberID = "NULL"
-            if data["taskMemberID"] != "None":
-                taskMemberID = data["taskMemberID"]
-            taskID = data["taskID"]
-            sql = "UPDATE Tasks " \
-                  f"SET taskName='{taskName}', taskDesc='{taskDesc}', taskPriority='{taskPriority}', taskDeadline='{taskDeadline}', " \
-                  f"taskDifficulty='{taskDifficulty}', taskDone='{taskDone}', taskProjectID={taskProjectID}, taskTeamID={taskTeamID}, taskMemberID={taskMemberID} " \
-                  f"WHERE taskID='{taskID}';"
-            sql_UPDATE(sql)
-            return
-        elif data["page"] == "membersTeamsPage":
-            memberID = data["memberID"]
-            teamID = data["teamID"]
-            mapID = data["mapID"]
-            sql = "UPDATE MembersTeams " \
-                  f"SET memberID={memberID}, teamID={teamID} " \
-                  f"WHERE mapID={mapID};"
-            sql_UPDATE(sql)
-            return
-    elif data['action'] == 'Delete': # if button was Delete
-        if data["page"] == "projectPage":
-            projectID = data["projectID"]
-            sql = f"DELETE FROM Projects WHERE projectID={projectID};"
-            sql_DELETE(sql)
-            return
-        elif data["page"] == "memberPage":
-            memberID = data["memberID"]
-            sql = f"DELETE FROM Members WHERE memberID={memberID};"
-            sql_DELETE(sql)
-            return
-        elif data["page"] == "teamPage":
-            teamID = data["teamID"]
-            sql = f"DELETE FROM Teams WHERE teamID={teamID}"
-            sql_DELETE(sql)
-            return
-        elif data["page"] == "taskPage":
-            taskID = data["taskID"]
-            sql = f"DELETE FROM Tasks WHERE taskID={taskID}"
-            sql_DELETE(sql)
-            return
-        elif data["page"] == "membersTeamsPage":
-            mapID = data["mapID"]
-            sql = f"DELETE FROM MembersTeams WHERE mapID={mapID};"
-            sql_DELETE(sql)
-            return
+
+def CRUD_membersteams(usr_input):
+    """Checks user input. If attribute was empty string, set to Null, then send to sql DB"""
+    mapID = usr_input["mapID"]
+    teamID = usr_input["teamID"] if "teamID" in usr_input else None
+    memberID = usr_input["memberID"] if "memberID" in usr_input else None
+    if usr_input["action"] == "Create":
+        sql = "INSERT INTO MembersTeams (memberID, teamID) VALUES (%s, %s)"
+        values = (memberID, teamID)
+        sql_INSERT(sql, values)
+    elif usr_input["action"] == "Update":
+        sql = "UPDATE MembersTeams " \
+              "SET memberID=%s, teamID=%s " \
+              "WHERE mapID=%s;"
+        values = (memberID, teamID, mapID)
+        sql_UPDATE(sql, values)
+    elif usr_input["action"] == "Delete":
+        sql = f"DELETE FROM MembersTeams WHERE mapID={mapID};"
+        sql_DELETE(sql)
+    return
+
+
+def connect_to_db():
+    mydb = mysql.connector.connect(
+        host=sys.argv[2],
+        user=sys.argv[4],
+        password=sys.argv[5],
+        database=sys.argv[3])
+    return mydb
 
 
 def sql_SELECT(sql):
     """SELECT MySQL using query"""
+    mydb = connect_to_db()
     mycursor = mydb.cursor(dictionary=True)
     mycursor.execute(sql)
     result = mycursor.fetchall()
     mycursor.close()
+    mydb.close()
     return result
 
 
 def sql_INSERT(sql, values):
     """INSERT into MySQL using query and values"""
+    mydb = connect_to_db()
     mycursor = mydb.cursor()
     mycursor.execute(sql, values)
     print(mycursor.rowcount, "record inserted.")
     mydb.commit()
     mycursor.close()
+    mydb.close()
 
-def sql_UPDATE_WV(sql, values):
-    """UPDATE MySQL using query"""
+
+def sql_UPDATE(sql, values):
+    """UPDATE MySQL using query that has Null values"""
+    mydb = connect_to_db()
     mycursor = mydb.cursor()
     mycursor.execute(sql, values)
     print(mycursor.rowcount, "record updated")
     mydb.commit()
     mycursor.close()
-
-def sql_UPDATE(sql):
-    """UPDATE MySQL using query"""
-    mycursor = mydb.cursor()
-    mycursor.execute(sql)
-    print(mycursor.rowcount, "record updated")
-    mydb.commit()
-    mycursor.close()
+    mydb.close()
 
 
 def sql_DELETE(sql):
     """DELETE MySQL row using ID"""
+    mydb = connect_to_db()
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     print(mycursor.rowcount, "record deleted")
     mydb.commit()
     mycursor.close()
+    mydb.close()
+
+
+def user_input_validation(CRUD_page, data):
+    """Tries to do CRUD operation. If invalid input, show error for user to see"""
+    try:
+        CRUD_page(data)
+    except Exception as err:
+        err = str(err)[str(err).find(':') + 2:]
+        action = data["action"]
+        flash(f"{action} Failed: {err}")
+
+
+def replace_None_with_emp_str(elements):
+    newelements = []
+    for item in elements:
+        item = {k: "" if v is None else v for k, v in item.items()}
+        newelements.append(item)
+    print(newelements)
+    return newelements
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -269,16 +216,16 @@ def projects():
     if request.method == "POST":
         data = request.form
         print(data)
-        if data["search"] == "Go":
-            """If user pressed search button"""
+        if data["search"] == "Go":  # If user pressed search button
             usr_search = data["search-input"]
         else:
-            CRUD_operations(data)
+            user_input_validation(CRUD_projects, data)
     if usr_search:
         sql = f"SELECT * FROM Projects WHERE projectName = '{usr_search}';"
     else:
         sql = "SELECT * FROM Projects"
-    result = sql_SELECT(sql)
+    #result = sql_SELECT(sql)
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     return render_template("projects.html", data=result)
 
 
@@ -288,8 +235,13 @@ def teams():
     if request.method == "POST":
         data = request.form
         print(data)
-        CRUD_operations(data)
-    result = sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID FROM Teams LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID")
+        user_input_validation(CRUD_teams, data)
+    #result = sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
+    #                    "FROM Teams "
+    #                    "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID")
+    result = replace_None_with_emp_str(sql_SELECT("SELECT Teams.teamID, Teams.teamName, Teams.teamDesc, Projects.projectName, Projects.projectID "
+                                                  "FROM Teams "
+                                                  "LEFT JOIN Projects ON Teams.teamProjectID=Projects.projectID"))
     teams_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
     return render_template("teams.html", data=result, projects=teams_projects)
 
@@ -300,6 +252,27 @@ def teams_by_proj():
     result = sql_SELECT(sql)
     return jsonify(result)
 
+@app.route("/teams-by-task", methods=["GET"])
+def teams_by_task():
+    task_id = request.args.get('task_id')
+    sql = f"SELECT teamID, teamName FROM Teams WHERE teamID = (SELECT taskTeamID FROM Tasks WHERE taskID = '{task_id}') " \
+        "UNION " \
+        f"SELECT teamID, teamName FROM Teams WHERE teamProjectID = (SELECT taskProjectID FROM Tasks WHERE taskID = '{task_id}')"
+    null_check = f"(SELECT taskTeamID FROM Tasks WHERE taskID = '{task_id}') "
+    result = sql_SELECT(sql)
+    null_check = sql_SELECT(null_check)[0]['taskTeamID']
+    # create the none option
+    opt_none = {}
+    opt_none['teamID'] = ""
+    opt_none['teamName'] = "No Team"
+    # if null check fails (we have a selected team)
+    if (null_check):
+        result.append(opt_none)
+    # otherwise we don't (make none option first item)
+    else:
+        result.insert(0, opt_none)
+    return jsonify(result)
+
 @app.route("/members", methods=["POST", "GET"])
 def members():
     """Members Page"""
@@ -307,25 +280,48 @@ def members():
     if request.method == "POST":
         data = request.form
         print(data)
-        if data["search"] == "Go":
-            """If user pressed search button"""
+        if data["search"] == "Go":  # If user pressed search button
             usr_search = data["search-input"]
         else:
-            CRUD_operations(data)
+            user_input_validation(CRUD_members, data)
     if usr_search:
         sql = f"SELECT * FROM Members WHERE memberEmail = '{usr_search}';"
     else:
         sql = "SELECT * FROM Members"
-    result = sql_SELECT(sql)
+    #result = sql_SELECT(sql)
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     return render_template("members.html", data=result)
 
 @app.route("/members-by-team", methods=["GET"])
 def members_by_team():
     team_id = request.args.get('team_id')
     sql = "SELECT Members.memberID, concat(Members.memberFName, ' ', Members.memberLName) fullName FROM MembersTeams " \
-           "LEFT JOIN Members ON MembersTeams.memberID = Members.memberID " \
-           f"WHERE teamID = '{team_id}'"
+          "LEFT JOIN Members ON MembersTeams.memberID = Members.memberID " \
+          f"WHERE teamID = '{team_id}'"
     result = sql_SELECT(sql)
+    return jsonify(result)
+
+@app.route("/members-by-task", methods=["GET"])
+def members_by_task():
+    task_id = request.args.get('task_id')
+    sql = f"SELECT memberID, concat(memberFName, ' ', memberLName) fullName FROM Members WHERE memberID = (SELECT taskMemberID FROM Tasks WHERE taskID = '{task_id}') " \
+        "UNION " \
+        f"SELECT Members.memberID, concat(Members.memberFName, ' ', Members.memberLName) fullName FROM MembersTeams " \
+        "LEFT JOIN Members ON MembersTeams.memberID = Members.memberID " \
+        f"WHERE MembersTeams.teamID = (SELECT taskTeamID FROM Tasks WHERE taskID = '{task_id}')"
+    null_check = f"(SELECT taskMemberID FROM Tasks WHERE taskID = '{task_id}') "
+    result = sql_SELECT(sql)
+    null_check = sql_SELECT(null_check)[0]['taskMemberID']
+    # create the none option
+    opt_none = {}
+    opt_none['memberID'] = ""
+    opt_none['fullName'] = "No Assignee"
+    # if null check fails (we have a selected team)
+    if (null_check):
+        result.append(opt_none)
+    # otherwise we don't (make none option first item)
+    else:
+        result.insert(0, opt_none)
     return jsonify(result)
 
 @app.route("/tasks", methods=["POST", "GET"])
@@ -335,31 +331,28 @@ def tasks():
     if request.method == "POST":
         data = request.form
         print(data)
-        if data["search"] == "Go":
-            """If user pressed search button"""
+        if data["search"] == "Go":  # If user pressed search button
             usr_search = data["search-input"]
         else:
-            # CRUD_operations(data)
-            CRUD_tasks(data)
+            user_input_validation(CRUD_tasks, data)
     if usr_search:
         sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
-                "FROM Tasks " \
-                "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
-                "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
-                "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
-                f"WHERE projectName = '{usr_search}';"
+              "FROM Tasks " \
+              "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+              "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+              "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+              f"WHERE projectName = '{usr_search}';"
     else:
         sql = "SELECT Tasks.taskID, Tasks.taskName, Tasks.taskDesc, Tasks.taskPriority, Tasks.taskDeadline, Tasks.taskDifficulty, Tasks.taskDone, Projects.projectName, Projects.projectID, Teams.teamName, Teams.teamID, concat(memberFName, ' ',memberLName) fullName, Members.memberID " \
-            "FROM Tasks " \
-            "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
-            "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
-            "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
-            "GROUP BY Tasks.taskID;"
-    result = sql_SELECT(sql)
+              "FROM Tasks " \
+              "LEFT JOIN Projects ON Tasks.taskProjectID=Projects.projectID " \
+              "LEFT JOIN Teams on Tasks.taskTeamID=Teams.teamID " \
+              "LEFT JOIN Members on Tasks.taskMemberID=Members.memberID " \
+              "GROUP BY Tasks.taskID;"
+              
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     task_projects = sql_SELECT("SELECT projectID, projectName FROM Projects")  # dropdown for projectID=projectName
-    task_teams = sql_SELECT("SELECT teamID, teamName FROM Teams")  # dropdown for teamID=teamName
-    task_members = sql_SELECT("SELECT memberID, concat(memberFName, ' ',memberLName) fullName FROM Members")  # dropwodnw for memberID=fullName
-    return render_template("tasks.html", data=result, projects=task_projects, teams=task_teams, members=task_members)
+    return render_template("tasks.html", data=result, projects=task_projects)
 
 
 @app.route("/members_teams", methods=["POST", "GET"])
@@ -368,13 +361,14 @@ def members_teams():
     if request.method == "POST":
         data = request.form
         print(data)
-        CRUD_operations(data)
-    sql = "SELECT mapID, concat(memberFName, ' ',memberLName) fullName, Teams.teamName " \
+        user_input_validation(CRUD_membersteams, data)
+    sql = "SELECT mapID, concat(memberFName, ' ',memberLName) fullName, Members.memberID, Teams.teamName, Teams.teamID " \
           "FROM MembersTeams " \
           "LEFT JOIN Members ON MembersTeams.memberID=Members.memberID " \
           "LEFT JOIN Teams on MembersTeams.teamID=Teams.teamID " \
           "GROUP BY mapID;"
-    result = sql_SELECT(sql)
+    #result = sql_SELECT(sql)
+    result = replace_None_with_emp_str(sql_SELECT(sql))
     mm_members = sql_SELECT("SELECT memberID, concat(memberFName, ' ',memberLName) fullName FROM Members")  # dropdown for memberID=fullName
     mm_teams = sql_SELECT("SELECT teamID, teamName FROM Teams")  # dropdown for teamID=teamName
     return render_template("members_teams.html", data=result, members=mm_members, teams=mm_teams)
@@ -382,3 +376,4 @@ def members_teams():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=sys.argv[1], debug=True)
+    #app.run(debug=True)

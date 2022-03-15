@@ -3,11 +3,20 @@
 {% block content %}
 <h1 class="center">Members_Teams Page</h1>
 <h3 class="center">Assign members to teams</h3>
+<div class="center">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <h2>{{message}}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 <table id="table-data" style="width:30%;">
     <tr>
         <th style="width: 60px;"><label>mapID</label></th>
-        <th><label>memberID</label></th>
-        <th><label>teamID</label></th>
+        <th><label>Member</label></th>
+        <th><label>Team</label></th>
     </tr>
     <tr>
         <form action="#" method="post">
@@ -36,16 +45,16 @@
             </td>
         </form>
     </tr>
-    <tr id="line-break"><td><br></td>></tr>
+    <tr id="line-break"><td><br></td></tr>
     {% for item in data %}
         <tr>
             <form action="#" method="post">
                 <td>
-                    <input type="hidden" name="page" value="membersTeamsPage">
+                    <input type="hidden" name="page" value="membersTeamsPage"/>
                     <input type="text" name="mapID" value="{{item['mapID']}}" readonly />
                 </td>
                 <td>
-                    <select name="memberID" size="1" >
+                    <select name="memberID" id="memberID" size="1" >
                     <option value="{{item['memberID']}}">{{item['fullName']}}</option>
                     {% for member in members %}
                         {% if member['fullName'] != item['fullName'] %}
@@ -55,7 +64,7 @@
                     </select>
                  </td>
                 <td>
-                    <select name="teamID" size="1" >
+                    <select name="teamID" id="teamID" size="1" >
                     <option value="{{item['teamID']}}">{{item['teamName']}}</option>
                     {% for team in teams %}
                         {% if team['teamName'] != item['teamName'] %}

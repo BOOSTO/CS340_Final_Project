@@ -3,12 +3,21 @@
 {% block content %}
 <h1 class="center">Teams Page</h1>
 <h3 class="center">Add/Modify/Delete teams</h3>
+<div class="center">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <h2>{{message}}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 <table id="table-data">
     <tr>
-        <th style="width:5%;"><label>teamID</label></th>
-        <th style="width:30%;"><label>teamName</label></th>
-        <th style="width:45%;"><label>teamDesc</label></th>
-        <th><label>projectID</label></th>
+        <th style="width:5%;"><label>ID</label></th>
+        <th style="width:30%;"><label>Name</label></th>
+        <th style="width:45%;"><label>Description</label></th>
+        <th><label>Project</label></th>
         <th><label>Actions</label></th>
     </tr>
     <tr>
@@ -21,7 +30,7 @@
             <td><input  type="text" name="teamDesc" class="input-desc"/></td>
             <td>
                 <select name="teamProjectID" id="teamProjectID" size="1" >
-                    <option value="NULL" disabled selected>Select Project</option>
+                    <option value="Null" disabled selected>Select Project</option>
                     {% for project in projects %}
                     <option value="{{project['projectID']}}">{{project['projectName']}}</option>
                     {% endfor %}
@@ -42,7 +51,8 @@
             </td>
             <td><input type="text" name="teamName" value="{{item['teamName']}}" /></td>
             <td><input type="text" name="teamDesc" value="{{item['teamDesc']}}" /></td>
-            <td><select name="teamProjectID" id="teamID" size="1" >
+            <td>
+                <select name="teamProjectID" id="teamID" size="1" >
                 <option value="{{item['projectID']}}">{{item['projectName']}}</option>
                 {% for project in projects %}
                     {% if project['projectName'] != item['projectName'] %}
