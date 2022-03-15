@@ -323,7 +323,10 @@ def members():
         else:
             user_input_validation(CRUD_members, data)
     if usr_search:
-        sql = f"SELECT * FROM Members WHERE memberEmail = '{usr_search}';"
+        sql = f"SELECT * FROM Members WHERE memberFName LIKE '%{usr_search}%' UNION "\
+              f"SELECT * FROM Members WHERE memberLName LIKE '%{usr_search}%' UNION "\
+              f"SELECT * FROM Members WHERE memberEmail LIKE '%{usr_search}%';"\
+
     else:
         sql = "SELECT * FROM Members"
     result = replace_None_with_emp_str(sql_SELECT(sql))
